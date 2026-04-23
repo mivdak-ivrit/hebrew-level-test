@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hebrew Level Test</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html, body {
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    #root:empty::before {
+      content: "טוען...";
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-size: 1.5rem;
+      color: #4f46e5;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="react">
+    const { useState, useEffect } = React;
+
+    // ============ מצב בדיקה אוטומטי ============
+    // הפעלה: הוסף ?autotest לכתובת ה-URL (לדוגמה: file.html?autotest או netlify-url.app?autotest)
+    const AUTO_TEST = new URLSearchParams(window.location.search).has('autotest');
+    const SPEED = 250; // מילישניות בין לחיצות
+
+    // ============ נתוני 5 המבדקים ============
+    const TESTS = [
+      {
+        id: 'a1',
+        key: 'scoreA1',
+        name: "א' מתחילים",
+        nameAr: "Level A – Beginners",
+        story: {
+          title: 'הסיפור',
+          text: `אדם גר בחיפה, בבית גדול ליד הים. הוא מורה, כי הוא אוהב ללמד ילדים. הוא נשוי, אבל אין לו ילדים. היום הוא לא הולך לעבודה, כי הוא הולך עם אבא שלו לבית חולים. אבא שלו לא מרגיש טוב. כואב לו כל הגוף: כואבת לו הבטן, כואב לו הראש וכואבות לו העיניים. אדם חושב: "אולי אבא צריך ניתוח?". הם מדברים עם הרופא, והרופא מסביר: "אדם, אבא שלך חולה, והוא צריך להישאר בבית החולים ומחר הניתוח. היום אסור לאכול ואסור לשתות". אבא של אדם חושב: "אבל יש חתונה היום בערב איך אני יכול להישאר בבית החולים היום?".`
+        },
+        correctAnswers: {
+          0: 'ג', 1: 'א', 2: 'ב', 3: 'א', 4: 'א', 5: 'ד', 6: 'ב', 7: 'ב', 8: 'ג', 9: 'ג',
+          10: 'ב', 11: 'א', 12: 'ב', 13: 'א', 14: 'ד', 15: 'ד', 16: 'ג', 17: 'א', 18: 'ב', 19: 'ג',
+          20: 'א', 21: 'א', 22: 'ב', 23: 'א', 24: 'ב'
+        },
+        questions: [
+          { question: 'תלמידים הולכים ____ בית ספר -', options: ['את', 'ב', 'ל', 'של'] },
+          { question: 'בכיתה יש -', options: ['שולחנות וכיסאות', 'מסגדים וכנסיות', 'תיירים ותיירות', 'מקומות קדושים'] },
+          { question: 'בכיתה אין -', options: ['ספר', 'אוטובוס', 'מחברות', 'ספרים'] },
+          { question: 'אחרי השיעור אמיר -', options: ['הולך הביתה.', 'הולך לביתה.', 'הולך ביתה.', 'הולך להבית.'] },
+          { question: 'בכפר יש בית ספר -', options: ['גדול', 'גדולה', 'גדולות', 'גדולים'] },
+          { question: 'ביחיד "כיתה גדולה" - ברבים -', options: ['כיתות גדול', 'כיתות גדולה', 'כיתות גדולים', 'כיתות גדולות'] },
+          { question: 'בכפר יש -', options: ['מסעדה טעימות.', 'מסעדות גדולות.', 'מסעדות גדול.', 'מסעדה גדול.'] },
+          { question: 'אמיר לומד. רינה ____.', options: ['לומד', 'לומדת', 'לומדים', 'ללמוד'] },
+          { question: 'אמיר גר בירושלים, אבל רוצה ____ בחיפה.', options: ['גר', 'גרה', 'לגור', 'יגור'] },
+          { question: 'רינה ואמיר ____ בכיתה.', options: ['יושב', 'יושבת', 'יושבים', 'יושבות'] },
+          { question: 'אמיר חולה מאוד, ולכן הוא _____ ללכת לרופא.', options: ['רוצה', 'צריך', 'מותר', 'יכול'] },
+          { question: 'מה תלמידים עושים בבית הספר?', options: ['הם לומדים.', 'הם ילמדו.', 'הם ילמודו.', 'הם למדו.'] },
+          { question: 'בירושלים -', options: ['יש פארקים ויש לא ים.', 'יש פארקים ואין ים.', 'יש פארקים ולא יש ים.', 'יש פארקים ואין יש ים.'] },
+          { question: 'המורה שואלת את התלמידות "איך אתן מרגישות?" ומיכל עונה:', options: ['אני מרגישה טוב.', 'אני מרגישה טובה.', 'אני מרגישה טובים.', 'אני מרגישה טובות.'] },
+          { question: 'התלמידים מקשיבים ____ מורה.', options: ['על', 'לה', 'את', 'ל'] },
+          { question: 'אמיר מטייל בירושלים ורוצה לאכול.', options: ['הוא מחפש את חומוס.', 'הוא מחפש את החומוס.', 'הוא מחפש על חומוס.', 'הוא מחפש חומוס.'] },
+          { question: 'תיירים בירושלים -', options: ['הם הולכים להשוק.', 'הם הולכים משוק.', 'הם הולכים לשוק.', 'הם הולכים על שוק.'] },
+          { question: 'רינה מספרת מי היא:', options: ['אני גם מורה וגם סטודנטית.', 'אני גם מורה גם סטודנטית.', 'אני מורה גם סטודנטית.', 'גם מורה גם אני סטודנטית.'] },
+          { question: 'המורה שואלת את רינה:', options: ['כמה יש לך ילדים?', 'כמה ילדים יש לך?', 'כמה ילדים לך?', 'כמה לך ילדים?'] },
+          { question: 'רינה יוצאת מהכיתה, והמורה שואלת:', options: ['איפה את הולכת?', 'לאין את הולכת?', 'לאן את הולכת?', 'מאיפה את הולכת?'] },
+          { question: 'מה נכון?', options: ['לאדם יש אישה אבל אין לו ילדים.', 'יש לו אישה ויש לו ילדים.'], hasStory: true },
+          { question: 'אדם עובד היום?', options: ['לא', 'כן'], hasStory: true },
+          { question: 'מי חולה?', options: ['אדם', 'אבא של אדם'], hasStory: true },
+          { question: 'אדם מתחתן היום?', options: ['לא', 'כן'], hasStory: true },
+          { question: 'איך אבא של אדם מרגיש?', options: ['הוא שמח', 'הוא עצוב'], hasStory: true }
+        ]
+      },
+      {
+        id: 'a2',
+        key: 'scoreA2',
+        name: "א' מתקדמים",
+        nameAr: "Level A – Advanced",
+        story: {
+          title: 'עבודה בעולם המודרני',
+          text: `החיים השתנו. פעם, אנשים הלכו לעבודה בבוקר וחזרו הביתה בערב. בבית הם לא עבדו, ולכן היה להם הרבה זמן. הם דיברו עם הילדים, אכלו ארוחת ערב עם המשפחה, הלכו לטייל, ביקרו את הדודים והדודות, קראו ספרים וחשבו. והיום? היום הרבה אנשים עובדים מהבוקר עד הערב. בבוקר הם הולכים לעבודה ועובדים קשה, ואז, בערב, הם חוזרים הביתה, כותבים מיילים, מדברים בטלפון, כותבים עוד מיילים, שולחים הודעות למנהל ועונים למיילים...
+
+יוסף, שעובד בחברת הייטק, אומר: "לחיים בעולם המודרני יש יתרונות, אבל יש להם גם חסרונות. אם אתה עובד בחברה בינלאומית אתה צריך לעבוד כל הזמן. אפשר לחיות ככה, אבל לא כל אחד רוצה עבודה בלי הפסקה. אני חושב שזה לא בריא".
+
+מרבת, שעובדת גם היא בחברת הייטק, אומרת: "החיים המודרניים מעניינים. אני אוהבת אותם. אני יכולה לגור במקום אחד בעולם ולעבוד עם אנשים במקום אחר בעולם. אני יכולה לעבוד ביום או בלילה, תמיד יש מישהו שאפשר לדבר אתו".`
+        },
+        correctAnswers: {
+          0: 'ב', 1: 'א', 2: 'ג', 3: 'ג', 4: 'ב', 5: 'ב', 6: 'א', 7: 'א', 8: 'ב', 9: 'ב',
+          10: 'א', 11: 'א', 12: 'ד', 13: 'א', 14: 'ד', 15: 'ג', 16: 'ד', 17: 'ג', 18: 'ב', 19: 'ג',
+          20: 'ב', 21: 'ד', 22: 'ב', 23: 'ג', 24: 'א'
+        },
+        questions: [
+          { question: 'עוגת שוקולד היא -', options: ['עוגה ושוקולד', 'עוגה משוקולד', 'שוקולד על עוגה', 'עוגה בלי שוקולד'] },
+          { question: 'איך ברבים? חנות גדולה -', options: ['חנויות גדולות', 'חנויות גדולה', 'חנותים גדולים', 'חנותיות גדולות'] },
+          { question: 'דני אומר: יש לי חיים ________.', options: ['טוב', 'טובה', 'טובים', 'טובות'] },
+          { question: 'איך ברבים? איש דתי –', options: ['אנשים דתי', 'אנשים דתיות', 'אנשים דתיים', 'אנשים דתייה'] },
+          { question: 'מיכל אוהבת לשתות קפה, אבל אתמול היא לא ____ קפה.', options: ['שתה', 'שתתה', 'שתו', 'תשתה'] },
+          { question: 'דני מספר: "אתמול בכיתה אני והחברים שלי ____ על הרבה דברים".', options: ['דיברו', 'דיברנו', 'דיבר', 'דברנו'] },
+          { question: 'אחרי השיעור התלמיד אומר למורה: \'_____ לנו שיש מבחן מחר.\'', options: ['את אמרת', 'את תאמרי', 'את אמרתי', 'את דיברת'] },
+          { question: 'דני מספר מה הוא עשה אתמול:', options: ['ישבתי עם חברים.', 'הייתי יושב עם חברים בבית קפה.', 'ישבת עם חברים.', 'ישבנו עם החברים.'] },
+          { question: 'אתמול בערב -', options: ['הייתה חתונה, ובחתונה היה הרבה אורחים.', 'הייתה חתונה, ובחתונה היו הרבה אורחים.', 'היה חתונה, ובחתונה היה הרבה אורחים.', 'היה חתונה, ובחתונה היו הרבה אורחים.'] },
+          { question: 'למיכל יש תור לרופא. היא אומרת למורה: \'_____\'', options: ['יש לי תור לרופא. אני הולכת.', 'יש לי תור לרופא. אני צריכה ללכת.', 'יש לי תור לרופא. אני רוצה ללכת.', 'יש לי תור לרופא. אני צריכה לילך.'] },
+          { question: 'מיכל באה לשיעור בשעה 9:00. מה המורה שואלת?', options: ['למה את באה מאוחר?', 'למה את באה מאוחרת?', 'למה את באה מאוחרים?', 'למה את לבוא מאוחר?'] },
+          { question: 'בהפסקה יוסף רואה את מיכל מדברת עם דני. הוא אומר לחבר:', options: ['היא מדברת איתו.', 'היא מדברת אותו.', 'היא מדברת עמה.', 'היא מדברת ממנו.'] },
+          { question: 'אימא של מיכל חולה.', options: ['מיכל עוזר לאימא.', 'מיכל עוזרת על אימא.', 'מיכל עוזרת את אימא.', 'מיכל עוזרת לאימא.'] },
+          { question: 'למה הם באו לפה?', options: ['כי אבא שלהם אמר להם.', 'בגלל אבא שלהם אמר להם.', 'אבא שלהם.', 'כי שאבא שלהם אמר.'] },
+          { question: 'מיכל לומדת -', options: ['מ - 8:00 עוד 14:00.', 'מי - 8:00 עוד 14:00.', 'מי 8:00 עד 14:00.', 'מ- 8:00 עד 14:00.'] },
+          { question: 'המורה שואל לשם מה התלמידים באים לקורס העברית, ודני עונה:', options: ['כי ללמוד עברית', 'בגלל ללמוד עברית', 'כדי ללמוד עברית', 'בגלל שרוצה ללמוד עברית'] },
+          { question: 'לפני שבוע ____ מבחן.', options: ['היינו', 'הייתה', 'היו', 'היה'] },
+          { question: 'העגבנייה ____ השמש ____ והשמים ____.', options: ['אדום, צהוב, כחול', 'אדומה, צהובה, כחול', 'אדומה, צהובה, כחולים', 'אדומה, צהוב, כחולים'] },
+          { question: 'לשם מה הולכים לסופרמרקט?', options: ['כי רוצים לקנות אוכל', 'כדי לקנות אוכל', 'כי רעבים', 'הולכים קונים'] },
+          { question: 'מה אי אפשר לעשות בכיתה?', options: ['לאכול', 'לשתות', 'לשחות', 'כל התשובות נכונות'] },
+          { question: 'לפי הסיפור, פעם אנשים לא עבדו _____.', options: ['בבוקר', 'מהבית', 'כל יום', 'בערב'], hasStory: true },
+          { question: 'פעם -', options: ['אנשים לא עשו כלום בערב.', 'אנשים רק דיברו עם הילדים וטיילו.', 'אנשים עבדו בבית בערב.', 'אנשים עשו הרבה דברים בערב.'], hasStory: true },
+          { question: 'החיים פעם והחיים היום -', options: ['החיים פעם הם כמו החיים היום.', 'החיים היום הם לא כמו החיים פעם.', 'פעם היו חיים ועכשיו אין.', 'החיים פעם והחיים היום לא שונים.'], hasStory: true },
+          { question: 'מה יוסף חושב על החיים המודרניים?', options: ['אי אפשר לחיות ככה.', 'אפשר לחיות ככה, וזה בריא.', 'אפשר לחיות ככה, אבל לא כולם רוצים לחיות ככה.', 'כולם יכולים ורוצים חיים עם עבודה בלי הפסקה.'], hasStory: true },
+          { question: 'מרבת חושבת ש –', options: ['לחיים המודרניים יש רק יתרונות.', 'לחיים המודרניים יש יתרונות וחסרונות.', 'אי אפשר לדבר עם אנשים בחיים המודרניים.', 'צריך לדבר עם אנשים במקומות אחרים בעולם.'], hasStory: true }
+        ]
+      },
+      {
+        id: 'b',
+        key: 'scoreB',
+        name: "ב'",
+        nameAr: "Level B",
+        story: null,
+        correctAnswers: {
+          0: 'ב', 1: 'ד', 2: 'א', 3: 'ג', 4: 'ג', 5: 'ד', 6: 'ב', 7: 'א', 8: 'ד', 9: 'ב',
+          10: 'ד', 11: 'ב', 12: 'ג', 13: 'ג', 14: 'ד', 15: 'ב', 16: 'א', 17: 'ב', 18: 'ד', 19: 'א',
+          20: 'ג', 21: 'ב', 22: 'ג', 23: 'א', 24: 'ב'
+        },
+        questions: [
+          { question: 'איך ברבים? הזדמנות –', options: ['הזדמנות', 'הזדמנויות', 'הזדמנותים', 'הזמנות'] },
+          { question: 'איך ברבים? סוד מסוכן -', options: ['סודים כמוסות', 'סודים מסוכנים', 'סודות מסוכנות', 'סודות מסוכנים'] },
+          { question: 'מחר אנחנו ____ בגדים יפים.', options: ['נלבש', 'נלבוש', 'נלבשו', 'תלבשו'] },
+          { question: 'בשבוע הבא ____ על טכנולוגיה.', options: ['נידבר', 'נדברו', 'נדבר', 'נידברנו'] },
+          { question: 'שאלה: "מה תעשו מחר?"\nתשובה:', options: ['מחר קנינו דברים בשוק.', 'מחר נקני דברים בשוק.', 'מחר נקנה דברים בשוק.', 'מחר אנחנו נקנו דברים בשוק.'] },
+          { question: 'מה תעשו בשוק?', options: ['נבחרים ירקות יפים.', 'נבחור ירקות יפים.', 'נבחרו ירקות יפים.', 'נבחר ירקות יפים.'] },
+          { question: 'מה מיכל רוצה להיות?', options: ['היא רוצה להיות מנהלת טובה ועושה הרבה דברים.', 'היא רוצה להיות מנהלת טובה ולעשות הרבה דברים.', 'היא רוצה להיות מנהלת ורוצה להיות הרבה דברים.', 'היא רוצה לעשות מנהלת ולהיות הרבה דברים.'] },
+          { question: 'דני אומר: "כשאגדל..." –', options: ['תהיה לי מכונית.', 'יהיה לי מכונית.', 'יהיו לי מכונית.', 'היה לי מכונית.'] },
+          { question: 'דני רוצה לקנות נעלי ____.', options: ['תרוצי', 'לרוץ', 'רוצה', 'ריצה'] },
+          { question: 'דני רוצה ____ מרתון השנה.', options: ['רץ', 'לרוץ', 'ריצה', 'רוצה'] },
+          { question: '"בית גדול" – ברבים', options: ['ביתים גדולה', 'בתים גדולה', 'ביתים גדולים', 'בתים גדולים'] },
+          { question: 'יוסף אומר: "אני לא מנהל אלא מורה". מה נכון?', options: ['יוסף רק מנהל.', 'יוסף רק מורה.', 'יוסף לא מנהל ולא מורה.', 'יוסף מורה ומנהל.'] },
+          { question: '"כמו שתלמידים לא אוהבים לעשות מבחנים, כך גם מורים לא אוהבים לבדוק אותם". מה נכון?', options: ['רק תלמידים לא אוהבים מבחנים.', 'רק מורים אוהבים מבחנים.', 'מורים ותלמידים לא אוהבים מבחנים.', 'מורים ותלמידים אוהבים מבחנים.'] },
+          { question: 'מיכל לומדת עברית ____ דני לומד אנגלית.', options: ['וגם', 'אבל', 'ואילו', 'בגלל'] },
+          { question: 'מיכל ודני גרים ברחוב קטן בכפר.', options: ['דני גר קרוב.', 'דני גר קרוב ממיכל.', 'דני גר קרוב על מיכל.', 'דני גר קרוב למיכל.'] },
+          { question: 'מיכל רוצה להיות מנהלת. היא אומרת:', options: ['אני רוצה להיות מנהלת לבית ספר.', 'אני רוצה להיות מנהלת של בית ספר.', 'אני רוצה להיות מנהילת של בית ספר.', 'אני רוצה להיות מנהלת על בית ספר.'] },
+          { question: 'דני אומר: "אני מדבר על כדורגל". מה המורה שאל?', options: ['על מה אתה מדבר?', 'על מי אתה מדבר?', 'למי אתה מדבר?', 'מי אתה מדבר?'] },
+          { question: 'המורה לספורט אומר לתלמידים:', options: ['רוץ!', 'רוצו!', 'ריצה!', 'רצים!'] },
+          { question: 'מחר אנחנו ____ במסעדה.', options: ['נוכל', 'נואכל', 'נאכלו', 'נאכל'] },
+          { question: 'השלימו: "אני מאחל לעצמי -"', options: ['שיהיה לי טוב.', 'שהיו לי טוב.', 'שהיה לי טוב.', 'להיות חיים טוב.'] },
+          { question: 'בפרסומות מבטיחים לאנשים דברים טובים -', options: ['כדי שהאנשים קנו.', 'כי האנשים קנו.', 'כדי שאנשים יקנו.', 'למה שיקנו.'] },
+          { question: 'כשמישהו לא יודע מה שמו של דבר, הוא שואל:', options: ['מה קרואים ל...?', 'איך קוראים ל...?', 'איך אומרים ל...?', 'מה קוראים את...?'] },
+          { question: 'דודינו =', options: ['הדוד שלי', 'הדודים שלי', 'הדודים שלנו', 'הדוד שלנו'] },
+          { question: 'מי שמחפש עבודה שולח -', options: ['קורות חיים', 'ראיון עבודה', 'הצעת עבודה', 'תנאי העסקה'] },
+          { question: '"לא חיובי" הוא -', options: ['חיוב', 'שלילי', 'חייבים', 'שלישי'] }
+        ]
+      },
+      {
+        id: 'c',
+        key: 'scoreC',
+        name: "ג'",
+        nameAr: "Level C",
+        story: {
+          title: 'החיים במציאות של אי-ודאות',
+          text: `מציאות של אי-ודאות היא חלק מהחיים המודרניים, ועם זאת רוב האנשים לא יודעים איך להתמודד איתה. האם באמת אין מה לעשות? מאמנים לחיים בריאים טוענים שבניגוד למה שרוב האנשים חושבים, בני אדם יכולים להשפיע על חייהם. אם הם רק יבינו את הגורמים המשפיעים עליהם, הם יבינו מה הם אמורים לעשות. אם הם רק ידעו לארגן את החיים שלהם הם יהיו מורכבים פחות.`
+        },
+        correctAnswers: {
+          0: 'ב', 1: 'ג', 2: 'ג', 3: 'ג', 4: 'ג', 5: 'ב', 6: 'ג', 7: 'ב', 8: 'ב', 9: 'א',
+          10: 'ד', 11: 'א', 12: 'ב', 13: 'ב', 14: 'ב', 15: 'ב', 16: 'ד', 17: 'א', 18: 'ב', 19: 'ג',
+          20: 'ב', 21: 'א', 22: 'ב', 23: 'ד', 24: 'ב'
+        },
+        questions: [
+          { question: 'לפני החלטות חשובות מנהלי החברה מתייעצים ____ המומחים.', options: ['את', 'עם', 'על', 'ב-'] },
+          { question: 'המחיר המוצע ____ התוצרת הזאת גבוה מדי.', options: ['למרות', 'בעקבות', 'עבור', 'לקראת'] },
+          { question: '"אנחנו נמסור להם את התסריט. הם יקבלו ____ גם את הסרטונים שכבר צולמו".', options: ['ממנו', 'מאנחנו', 'מאיתנו', 'ממני'] },
+          { question: 'העובד לפני עזיבתו: "אתם לא תסתדרו ____".', options: ['בלי אני', 'בלעדינו', 'בלעדיי', 'בלי'] },
+          { question: 'העמותה מארגנת את חלוקת המזון. החלוקה מאורגנת ____ כבר שנים רבות.', options: ['על ידם', 'על ידו', 'על ידיה', 'על ידיהם'] },
+          { question: '____ של החברה יתברר בקרוב.', options: ['גורל', 'גורלה', 'גורלים', 'גורלי'] },
+          { question: 'יתרונותיו ה____ של המכשיר יוצגו בתערוכה הקרובה.', options: ['משמעותי', 'משמעותית', 'משמעותיים', 'משמעותיות'] },
+          { question: 'החברים לא פגשו ____ עשרים שנה.', options: ['זה עם זה', 'זה את זה', 'עם', 'עם אחד'] },
+          { question: 'רוב ____ מנהיגים לא מעוניינים לעסוק בהתנהלות הכלכלית של האזרחים.', options: ['מ-', 'ה-', 'מה-', 'מי ה-'] },
+          { question: 'מחלוקות הן חלק ____ עבודת צוות.', options: ['מ-', 'מה-', 'ב-', 'ה-'] },
+          { question: 'בניית מגדלים ____ לגרום לנזק סביבתי.', options: ['יכולה', 'חייבת', 'צריכה', 'עלולה'] },
+          { question: 'אבא לבן: "אל תבזבז את כל הכסף שהרווחת. ____ לחסוך אותו".', options: ['עדיף', 'יכול', 'חבל', 'רוצה'] },
+          { question: 'המנהלת לעובדים: "____ יכול לעבוד מרחוק – יקבל תוספת למשכורת".', options: ['מיהו', 'מי ש-', 'מי הוא', 'מי'] },
+          { question: 'כישלונות ____ הדרך הטובה ביותר להתקדמות בחיים.', options: ['היא', 'הם', 'הן', 'הוא'] },
+          { question: 'דני: "המנהל הישיר שלי ____ עובד בחברה כבר הרבה זמן".', options: ['הוא', '---', 'ה-', 'מי'] },
+          { question: 'המנהל לעובדים: "בדקו את סדר העדיפויות שלכם ____ תצטערו".', options: ['בגלל ה-', 'אחרת', 'בעקבות', 'כדי ש-'] },
+          { question: 'האיש ____ עכשיו למרות משקה האנרגיה ששתה.', options: ['לישון', 'יושן', 'יישן', 'ישן'] },
+          { question: '"____ אתמול. אני לא מבין איך זה קרה בכלל".', options: ['פוטרתי', 'פיטרתי', 'יתפטר', 'מפוטר'] },
+          { question: 'האיש ____ בתחנת המשטרה עד שיוחלט מה יהיה גורלו.', options: ['נעצר', 'עצור', 'עצר', 'עוצר'] },
+          { question: 'משאבים רבים ____ במיזם זה.', options: ['הושקעה', 'השקיע', 'הושקעו', 'השקיעה'] },
+          { question: '"אתה חייב _____. לא תוכל להמשיך _____."', options: ['להשתנה, להתחבא', 'להשתנות, להתחבא', 'להשתנא, להתחבות', 'להשתנות, להתחבות'] },
+          { question: 'מה נכון לפי הטקסט?', options: ['רוב האנשים לא יודעים להתמודד עם מציאות של אי-ודאות למרות שהיא חלק מהחיים.', 'רוב האנשים מתמודדים עם מציאות של אי-ודאות בגלל שהיא חלק מהחיים.', 'רוב האנשים לא מתמודדים עם מציאות של אי-ודאות ולכן היא חלק מחיים שלהם.', 'רוב האנשים לא יודעים להתמודד עם מציאות של אי-ודאות בעקבות החיים המודרניים.'], hasStory: true },
+          { question: 'לפי הטקסט, רוב האנשים חושבים ש-', options: ['אפשר להשפיע על החיים.', 'אי אפשר להשפיע על החיים.', 'בני אדם מושפעים ממחשבות של אנשים.', 'רוב האנשים חושבים כמו מאמנים לחיים בריאים.'], hasStory: true },
+          { question: 'מה נכון לפי הטקסט?', options: ['אם בני אדם ידעו מה לעשות, הם ישפיעו על הגורמים השונים.', 'אם בני אדם אומרים מה הגורמים המשפיעים על חייהם, הם משפיעים עליהם.', 'אם בני אדם יבינו את הגורמים המשפיעים עליהם, המאמנים ידעו מה לעשות.', 'אם בני אדם יבינו את הגורמים המשפיעים על חייהם, הם ידעו מה לעשות.'], hasStory: true },
+          { question: 'מה נכון לפי הטקסט?', options: ['חיים מאורגנים הם חיים מורכבים.', 'חיים לא מאורגנים הם חיים מורכבים.', 'חיים מורכבים הם חיים מאורגנים.', 'בני אדם מורכבים מארגנים את חייהם.'], hasStory: true }
+        ]
+      },
+      {
+        id: 'd',
+        key: 'scoreD',
+        name: "ד'",
+        nameAr: "Level D",
+        story: {
+          title: 'חדשנות בחברות מודרניות',
+          text: `כל חברה מודרנית מנסה לקדם תהליכי חדשנות למרות החסמים הרבים. אלה נובעים מסיבות שונות: מסורת ניהול קשוחה; חוסר הבנה של מנהלים בנוגע לחשיבותה של חדשנות; היעדר כלים של העובדים, בכירים וזוטרים כאחד; תחושת חוסר מסוגלות של העובדים; פחד של עובדים שבעקבות שינויים משרתם תהפוך להיות מיותרת; ניסיון קודם שכשל ועוד.
+
+חדשנות תוספתית מתארת תהליך של שיפור וייעול הקיים. תהליך העבודה כולל את הצגת הצורך, ובעקבותיו העלאת רעיונות שונים ובדיקתם בזה אחר זה במטרה למצוא את הפתרון הטוב ביותר. מרחב העבודה כולל הכרה בבעיה הקיימת ובצורך בפתרונה, וידע מעשי הנדרש לפתרון. חדשנות מסוג זה יוצרת שינוי נקודתי במוצר מסוים המפותח עבור צרכיו של לקוח מסוים, ועל כן לא תמיד נדרשת לשם כך חשיבה מחוץ לקופסה.
+
+חדשנות פורצת דרך, לעומת זאת, יוצרת חיבורים בין תחומים שונים, המתאפשרים רק באמצעות עבודת צוות לה שותפים מומחים מתחומים שונים, התורמים כל אחד מידיעותיו. בתהליך עצמו המומחים מצויים במצב של עמימות עד שהתהליך מושלם. חדשנות פורצת דרך שוברת פרדיגמות, ותוצאתה משנה את הסביבה העסקית ואת הרגליהם של בני האדם. מסיבה זו היא נקראת גם חדשנות משבשת.`
+        },
+        correctAnswers: {
+          0: 'ג', 1: 'ב', 2: 'א', 3: 'ג', 4: 'ד', 5: 'ב', 6: 'ג', 7: 'ג', 8: 'א', 9: 'א',
+          10: 'ד', 11: 'ג', 12: 'ג', 13: 'ג', 14: 'ב', 15: 'ג', 16: 'א', 17: 'ג', 18: 'א', 19: 'ג',
+          20: 'ב', 21: 'ב', 22: 'א', 23: 'ב', 24: 'ד'
+        },
+        questions: [
+          { question: 'הילדים שלנו הם ____ העתיד.', options: ['גיל', 'גילים', 'דור', 'דורי'] },
+          { question: 'הדגל הוא ____ של המדינה.', options: ['רמז', 'סמל', 'סימן', 'גרף'] },
+          { question: 'איך נכון?', options: ['לרוב המדינות יש חוקים ברורים.', 'רוב המדינות יש להן חוקים ברורים.', 'רוב מדינות יש להן חוקים ברורים.', 'רוב מהמדינות יש להן חוקים ברורים.'] },
+          { question: 'המדדים הכלכליים של החברה ____ נושא חשוב בישיבת הצוות היום.', options: ['הוא', 'היא', 'הם', 'הן'] },
+          { question: 'יש מקומות עבודה ____ לעובדיהם לעבוד מרחוק.', options: ['אפשר', 'אפשרה', 'שאפשר', 'שאפשרו'] },
+          { question: '____ היא אסון.', options: ['בנייה למגדלים', 'בנייה של מגדלים', 'הבניית מגדלים', 'הבניית למגדלים'] },
+          { question: '____ התגברנו על הקשיים ____ נשארנו מצולקים.', options: ['אומנם, אם', 'אומנם, גם', 'אומנם, אך', 'אבל, אומנם'] },
+          { question: 'מה משמעות המשפט: "היעדר הכלים לא מנע מהם לפעול"?', options: ['הם פעלו כי לא היו להם כלים.', 'הם לא פעלו כי לא היו להם כלים.', 'הם פעלו למרות שלא היו להם כלים.', 'הם פעלו עם כלים.'] },
+          { question: 'ההליך ____ תחת השגחה קפדנית של המדינה.', options: ['מבוצע', 'מתבצעת', 'נבצע', 'מבצע'] },
+          { question: 'החוק ____ על ידי הממשלה כבר בישיבתה הקרובה.', options: ['יחוקק', 'תחוקק', 'יחוקקו', 'תחקוק'] },
+          { question: 'למרות שתנאי הקבלה ____ החלטתי להגיש את מועמדותי.', options: ['הקשיח', 'הקשיחו', 'הוקשח', 'הוקשחו'] },
+          { question: 'דרי הרחוב: "היחס ____ לא היה הוגן למרות ש____ המשטרה מצאה את העבריין."', options: ['כלפנו, בגללו', 'כלפנו, בגללינו', 'כלפינו, בזכותנו', 'כלפינו, בזכותינו'] },
+          { question: '"שליטים היו מתעללים בעבדיהם".', options: ['השליטים לא התעללו בעבדיהם.', 'השליטים התעללו בעבדיהם פעם אחת.', 'השליטים התעללו בעבדיהם שוב ושוב.', 'השלטים לא התעללו בכלל בעבדים.'] },
+          { question: 'מה פירוש הפתגם "מי שנכווה ברותחין נזהר בצוננין"?', options: ['מי שיש לו מים רותחים דואג שיהיו לו גם מים צוננים.', 'מי שנכשל בעבר ייכשל גם בעתיד.', 'מי שנכשל בעבר ייזהר בעתיד.', 'מי שהצליח בעבר ייזהר בעתיד.'] },
+          { question: 'איך אפשר להבין את הפתגם "צריך לעבוד בשיטת המקל והגזר"?', options: ['בבהירות ובעמימות.', 'בעונש ובפרסים.', 'בגלוי ובסתר.', 'בעצב ובשמחה.'] },
+          { question: 'יצור אל-אנושי הוא:', options: ['יצור על-אנושי', 'יצור שהוא גם אל וגם אדם', 'יצור לא אנושי', 'יצור שהולך לאנשים'] },
+          { question: 'השופט האשים את הסנגור שהוא דו-____.', options: ['פרצופי', 'לשוני', 'סטרי', 'ראשי'] },
+          { question: 'הסכם בר-קיימא הוא:', options: ['הסכם שמתקיים רק בחוץ', 'הסכם שלא יכול להתקיים', 'הסכם שעשוי להחזיק מעמד', 'הסכם שעלול להתפרק'] },
+          { question: 'החברים ____ בחברם שהצליח בתחרות.', options: ['קינאו', 'הקנו', 'קנו', 'היקנו'] },
+          { question: 'העובדת החרוצה בקפטריה מכינה פלפל ____.', options: ['מלא', 'ממלא', 'ממולא', 'מתמלא'] },
+          { question: 'הבוחן לנבחן: "____ לתוצאות המבדק יישלחו אליך הצעות מתאימות."', options: ['במקביל', 'בהתאם', 'בשל', 'מפאת'] },
+          { question: 'המלווה בהסעה ____ את הילד בכיסא הבטיחות.', options: ['השיבה', 'הושיבה', 'הושבה', 'נשבה'] },
+          { question: 'מה נכון?', options: ['חדשנות תוספתית פותרת בעיה מסוימת ואילו לחדשנות פורצת דרך השלכות רחבות.', 'חדשנות תוספתית פותרת בעיה מסוימת ואילו חדשנות פותרת צורך של לקוח.', 'חדשנות תוספתית עוסקת במוצר ואילו חדשנות פורצת דרך עוסקת במומחים.', 'חדשנות תוספתית מתחילה מבעיה ואילו חדשנות פורצת דרך מתחילה משבירת פרדיגמה.'], hasStory: true },
+          { question: 'מה נכון?', options: ['חדשות תוספתית משפיעה בצורה משמעותית יותר מחדשנות פורצת דרך.', 'חדשנות פורצת דרך משפיעה בצורה משמעותית יותר מחדשנות תוספתית.', 'שני סוגי החדשנות משפיעים בצורה זהה.', 'שני סוגי החדשנות אינם משפיעים על העולם.'], hasStory: true },
+          { question: 'מה משבשת החדשנות פורצת הדרך?', options: ['את המוצרים.', 'את המומחים שעבדו עליה.', 'את הנהלים שהיו קיימים עד אז.', 'את כל מה שהיה מוכר עד אז.'], hasStory: true }
+        ]
+      }
+    ];
+
+    const LETTERS = ['א', 'ב', 'ג', 'ד'];
+    const PASSING_SCORE = 67;
+    const POINTS_PER_QUESTION = 4;
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyvUzz7eG8THYUplO2YcnNtGYLhOaQ1zJCAWLQw2KYt2CbEVAKieoWt1cA2HPKqr1U80w/exec';
+
+    // ============ הקומפוננטה הראשית ============
+    const HebrewLevelTest = () => {
+      const [stage, setStage] = useState('registration'); // 'registration', 'levelIntro', 'test', 'levelResult', 'final'
+      const [currentLevel, setCurrentLevel] = useState(0);
+      const [currentQuestion, setCurrentQuestion] = useState(0);
+      const [formData, setFormData] = useState({
+        firstName: '', lastName: '', phone: '', email: '', location: '', teacherCode: ''
+      });
+      const [answers, setAnswers] = useState({}); // { 'a1-0': 'ב', ... }
+      const [scores, setScores] = useState([null, null, null, null, null]);
+      const [dataSent, setDataSent] = useState(false);
+      const [savedDataExists, setSavedDataExists] = useState(() => {
+        try {
+          const s = localStorage.getItem('hebrewTestProgress');
+          if (!s) return false;
+          const d = JSON.parse(s);
+          return !!(d.stage && d.stage !== 'registration' && d.stage !== 'final' && d.formData?.firstName);
+        } catch(e) { return false; }
+      });
+
+      const test = TESTS[currentLevel];
+
+      // ============ localStorage — שמירה/שחזור ============
+      const saveProgress = (stageVal, levelVal, questionVal, answersVal, scoresVal, formVal) => {
+        if (AUTO_TEST) return;
+        try {
+          localStorage.setItem('hebrewTestProgress', JSON.stringify({
+            stage: stageVal, currentLevel: levelVal, currentQuestion: questionVal,
+            answers: answersVal, scores: scoresVal, formData: formVal
+          }));
+        } catch(e) {}
+      };
+
+      const clearProgress = () => {
+        try { localStorage.removeItem('hebrewTestProgress'); } catch(e) {}
+      };
+
+      const resumeSavedProgress = () => {
+        try {
+          const saved = JSON.parse(localStorage.getItem('hebrewTestProgress'));
+          if (saved) {
+            if (saved.formData) setFormData(saved.formData);
+            if (saved.scores) setScores(saved.scores);
+            if (saved.answers) setAnswers(saved.answers);
+            setCurrentLevel(saved.currentLevel || 0);
+            setCurrentQuestion(saved.currentQuestion || 0);
+            setStage(saved.stage || 'levelIntro');
+            setSavedDataExists(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        } catch(e) {}
+      };
+
+      const startFresh = () => {
+        clearProgress();
+        setSavedDataExists(false);
+      };
+
+      // שמור בכל שינוי מצב
+      useEffect(() => {
+        if (AUTO_TEST) return;
+        if (stage === 'registration' || stage === 'final') return;
+        saveProgress(stage, currentLevel, currentQuestion, answers, scores, formData);
+      }, [stage, currentLevel, currentQuestion, answers, scores]);
+
+      // ============ מצב בדיקה אוטומטי ============
+      useEffect(() => {
+        if (!AUTO_TEST) return;
+
+        const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+        const run = async () => {
+          await sleep(400);
+
+          // שלב 1: מילוי הטופס
+          setFormData({
+            firstName: 'Test User',
+            lastName: '',
+            phone: '',
+            email: 'test@autotest.com',
+            location: 'Test Location'
+          });
+
+          await sleep(SPEED);
+
+          // שלב 2: Start Test / התחל מבדק
+          setStage('levelIntro');
+        };
+
+        run();
+      }, []); // רץ פעם אחת בטעינה
+
+      // מצב בדיקה: מעבר אוטומטי מ-levelIntro ל-test
+      useEffect(() => {
+        if (!AUTO_TEST) return;
+        if (stage !== 'levelIntro') return;
+        const t = setTimeout(() => setStage('test'), SPEED);
+        return () => clearTimeout(t);
+      }, [stage, currentLevel]);
+
+      // מצב בדיקה: בחירת תשובה ומעבר לשאלה הבאה אוטומטית
+      useEffect(() => {
+        if (!AUTO_TEST) return;
+        if (stage !== 'test') return;
+
+        const t = setTimeout(() => {
+          // בחר את התשובה הנכונה לפי מפתח התשובות
+          const key = `${test.id}-${currentQuestion}`;
+          const answer = test.correctAnswers[currentQuestion];
+          setAnswers(prev => ({ ...prev, [key]: answer }));
+
+          // עבור לשאלה הבאה (או סיים רמה)
+          setTimeout(() => {
+            if (currentQuestion < test.questions.length - 1) {
+              setCurrentQuestion(q => q + 1);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+              // חשב ציון וסיים רמה
+              let score = 0;
+              const allAnswers = { ...answers, [key]: answer };
+              test.questions.forEach((_, i) => {
+                if (allAnswers[`${test.id}-${i}`] === test.correctAnswers[i]) score += 4;
+              });
+              const newScores = [...scores];
+              newScores[currentLevel] = score;
+              setScores(newScores);
+              setStage('levelResult');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }, SPEED);
+        }, SPEED);
+
+        return () => clearTimeout(t);
+      }, [stage, currentQuestion, currentLevel]);
+
+      // מצב בדיקה: בסוף רמה - המשך אוטומטי
+      useEffect(() => {
+        if (!AUTO_TEST) return;
+        if (stage !== 'levelResult') return;
+
+        const currentScore = scores[currentLevel];
+        if (currentScore === null) return;
+
+        const t = setTimeout(() => {
+          const passed = currentScore >= PASSING_SCORE;
+          if (passed && currentLevel < TESTS.length - 1) {
+            setCurrentLevel(l => l + 1);
+            setCurrentQuestion(0);
+            setAnswers({});
+            setStage('levelIntro');
+          } else {
+            // שלח נתונים וסיים
+            const finalScores = [...scores];
+            let lastPassedLevel = 'אף רמה';
+            for (let i = 0; i < finalScores.length; i++) {
+              if (finalScores[i] !== null && finalScores[i] >= PASSING_SCORE) {
+                lastPassedLevel = TESTS[i].name;
+              }
+            }
+            const lastAttemptedLevel = TESTS[currentLevel].name;
+            const params = new URLSearchParams({
+              firstName: 'Test User', lastName: '', phone: '',
+              email: 'test@autotest.com', location: 'Test Location',
+              scoreA1: finalScores[0] !== null ? finalScores[0].toString() : '',
+              scoreA2: finalScores[1] !== null ? finalScores[1].toString() : '',
+              scoreB: finalScores[2] !== null ? finalScores[2].toString() : '',
+              scoreC: finalScores[3] !== null ? finalScores[3].toString() : '',
+              scoreD: finalScores[4] !== null ? finalScores[4].toString() : '',
+              lastPassedLevel, lastAttemptedLevel, teacherCode: '', version: 'intl', unified: 'true'
+            });
+            fetch(SHEET_URL + '?' + params.toString(), { method: 'GET', mode: 'no-cors' }).catch(() => {});
+            setStage('final');
+          }
+        }, SPEED * 2);
+
+        return () => clearTimeout(t);
+      }, [stage, scores, currentLevel]);
+
+      const handleFormChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+      };
+
+      const isFormValid = () => {
+        return formData.firstName && formData.email && formData.location;
+      };
+
+      const startTest = () => {
+        setStage('levelIntro');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      const beginLevel = () => {
+        setCurrentQuestion(0);
+        setStage('test');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      const handleAnswerSelect = (questionIndex, answer) => {
+        setAnswers({ ...answers, [`${test.id}-${questionIndex}`]: answer });
+      };
+
+      const goToNextQuestion = () => {
+        if (currentQuestion < test.questions.length - 1) {
+          setCurrentQuestion(currentQuestion + 1);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          finishLevel();
+        }
+      };
+
+      const goToPrevQuestion = () => {
+        if (currentQuestion > 0) {
+          setCurrentQuestion(currentQuestion - 1);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      };
+
+      const calculateLevelScore = () => {
+        let score = 0;
+        test.questions.forEach((_, i) => {
+          const userAnswer = answers[`${test.id}-${i}`];
+          if (userAnswer === test.correctAnswers[i]) {
+            score += POINTS_PER_QUESTION;
+          }
+        });
+        return score;
+      };
+
+      const finishLevel = () => {
+        const score = calculateLevelScore();
+        const newScores = [...scores];
+        newScores[currentLevel] = score;
+        setScores(newScores);
+        setStage('levelResult');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      const continueToNextLevel = () => {
+        if (currentLevel < TESTS.length - 1) {
+          setCurrentLevel(currentLevel + 1);
+          setCurrentQuestion(0);
+          setStage('levelIntro');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          // סיימנו את כל המבדקים
+          submitToSheet(scores.map((s, i) => i === currentLevel ? scores[currentLevel] : s));
+          setStage('final');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      };
+
+      const finishAfterFailure = () => {
+        submitToSheet(scores);
+        setStage('final');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      const submitToSheet = (finalScores) => {
+        if (dataSent) return;
+        setDataSent(true);
+        clearProgress(); // נקה localStorage
+
+        // זיהוי הרמה האחרונה שעבר
+        let lastPassedLevel = 'אף רמה';
+        for (let i = 0; i < finalScores.length; i++) {
+          if (finalScores[i] !== null && finalScores[i] >= PASSING_SCORE) {
+            lastPassedLevel = TESTS[i].name;
+          }
+        }
+
+        // זיהוי הרמה שבה נעצר
+        const lastAttemptedLevel = TESTS[currentLevel].name;
+
+        const params = new URLSearchParams({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          email: formData.email,
+          location: formData.location,
+          scoreA1: finalScores[0] !== null ? finalScores[0].toString() : '',
+          scoreA2: finalScores[1] !== null ? finalScores[1].toString() : '',
+          scoreB: finalScores[2] !== null ? finalScores[2].toString() : '',
+          scoreC: finalScores[3] !== null ? finalScores[3].toString() : '',
+          scoreD: finalScores[4] !== null ? finalScores[4].toString() : '',
+          lastPassedLevel: lastPassedLevel,
+          lastAttemptedLevel: lastAttemptedLevel,
+          teacherCode: formData.teacherCode || '',
+          version: 'intl',
+          unified: 'true'
+        });
+
+        try {
+          fetch(SHEET_URL + '?' + params.toString(), {
+            method: 'GET',
+            mode: 'no-cors'
+          }).catch(err => console.log('Fetch error:', err));
+        } catch (error) {
+          console.log('Error sending data:', error);
+        }
+      };
+
+      // ============ מסך רישום ============
+      if (stage === 'registration') {
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4 md:p-8" dir="rtl">
+            <div className="max-w-2xl mx-auto">
+
+              {/* באנר המשך מנקודת עצירה */}
+              {savedDataExists && (
+                <div className="bg-amber-50 border-2 border-amber-400 rounded-xl p-5 mb-4 shadow-md">
+                  <p className="text-lg font-bold text-amber-900 mb-1">
+                    🔖 יש לך מבדק שהתחלת — רוצה להמשיך מהמקום שעצרת?
+                  </p>
+                  <p className="text-sm text-amber-700 mb-4">
+                    You have an unfinished test — would you like to resume?
+                  </p>
+                  <div className="flex gap-3">
+                    <button onClick={resumeSavedProgress}
+                      className="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg transition-all">
+                      המשך / Resume ←
+                    </button>
+                    <button onClick={startFresh}
+                      className="px-5 py-2 bg-white hover:bg-gray-50 text-gray-600 font-semibold rounded-lg border border-gray-300 transition-all">
+                      התחל מחדש / Start fresh
+                    </button>
+                  </div>
+                </div>
+              )}
+
+            <div className="bg-white rounded-2xl shadow-xl p-8">
+              <h1 className="text-4xl font-bold text-center text-indigo-900 mb-2">
+                Hebrew Level Test / מבדק רמה בעברית
+              </h1>
+              <p className="text-center text-gray-600 mb-2 text-lg">
+                Hebrew Level Test
+              </p>
+              <p className="text-center text-gray-500 mb-8 text-sm">
+                The test has 5 levels. The better you do, the further you advance.
+              </p>
+
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-lg font-semibold text-gray-700 mb-2">
+                    שם <span className="text-sm font-normal text-gray-500">(Name)</span>
+                  </label>
+                  <input type="text" name="firstName" value={formData.firstName} onChange={handleFormChange}
+                    className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none" />
+                </div>
+
+                <div>
+                  <label className="block text-lg font-semibold text-gray-700 mb-2">
+                    כתובת מייל <span className="text-sm font-normal text-gray-500">(Email)</span>
+                  </label>
+                  <input type="email" name="email" value={formData.email} onChange={handleFormChange}
+                    className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none" />
+                </div>
+
+                <div>
+                  <label className="block text-lg font-semibold text-gray-700 mb-2">
+                    מקום <span className="text-sm font-normal text-gray-500">(Location)</span>
+                  </label>
+                  <input type="text" name="location" value={formData.location} onChange={handleFormChange}
+                    className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none" />
+                </div>
+
+                <div>
+                  <label className="block text-lg font-semibold text-gray-700 mb-2">
+                    קוד מורה <span className="text-sm font-normal text-gray-400">(אופציונלי)</span>
+                    <span className="block text-sm font-normal text-gray-400 mt-1">Teacher code (optional)</span>
+                  </label>
+                  <input type="text" name="teacherCode" value={formData.teacherCode} onChange={handleFormChange}
+                    placeholder="למשל: AB1234"
+                    className="w-full px-4 py-3 text-lg border-2 border-gray-200 rounded-lg focus:border-indigo-400 focus:outline-none bg-gray-50" />
+                </div>
+
+                <button onClick={startTest} disabled={!isFormValid()}
+                  className={`w-full py-4 text-xl font-bold rounded-lg transition-all ${
+                    isFormValid()
+                      ? 'bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}>
+                  Start Test / התחל מבדק
+                  <br />
+                  <span className="text-base font-normal">Start Test</span>
+                </button>
+              </div>
+            </div>
+            </div>
+          </div>
+        );
+      }
+
+      // ============ מסך הקדמה לרמה ============
+      if (stage === 'levelIntro') {
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4 md:p-8 flex items-center justify-center" dir="rtl">
+            <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-12 text-center">
+              <div className="mb-4 text-gray-500 text-lg">
+                רמה {currentLevel + 1} מתוך {TESTS.length}
+                <span className="mx-2 text-gray-300">|</span>
+                <span className="text-base">Level {currentLevel + 1} of {TESTS.length}</span>
+              </div>
+              <h1 className="text-5xl font-bold text-indigo-900 mb-2">
+                {test.name}
+              </h1>
+              <p className="text-xl text-gray-600 mb-6">{test.nameAr}</p>
+
+              <div className="bg-indigo-50 border-2 border-indigo-200 rounded-lg p-6 mb-8">
+                <p className="text-lg text-gray-700 mb-1">
+                  <span className="font-bold">25</span> שאלות
+                  {test.story && <span> • כולל קטע קריאה</span>}
+                </p>
+                <p className="text-sm text-gray-500 mb-3">
+                  {test.story ? '25 questions • includes a reading passage' : '25 questions'}
+                </p>
+                <p className="text-base text-gray-600 mb-1">
+                  To advance to the next level you need a score of <span className="font-bold">{PASSING_SCORE}</span> or higher
+                </p>
+                <p className="text-sm text-gray-500">
+                  To advance to the next level, a score of <span className="font-bold">{PASSING_SCORE}</span> or higher is required
+                </p>
+              </div>
+
+              <button onClick={beginLevel}
+                className="px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold rounded-lg transition-all">
+                Let's go! ←
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      // ============ מסך המבדק ============
+      if (stage === 'test') {
+        const currentQ = test.questions[currentQuestion];
+        const progress = ((currentQuestion + 1) / test.questions.length) * 100;
+        const selectedAnswer = answers[`${test.id}-${currentQuestion}`];
+
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4 md:p-8" dir="rtl">
+            <div className="max-w-3xl mx-auto">
+              {/* באנר רמה */}
+              <div className="bg-indigo-600 text-white rounded-lg shadow-md p-3 mb-4 text-center">
+                <span className="font-bold">מבדק רמה - {test.name}</span>
+                <span className="mx-2">|</span>
+                <span className="text-indigo-100">רמה {currentLevel + 1} מתוך {TESTS.length}</span>
+              </div>
+
+              {/* progress */}
+              <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-lg font-semibold text-gray-700">
+                    שאלה {currentQuestion + 1} מתוך {test.questions.length}
+                  </span>
+                  <span className="text-lg font-semibold text-indigo-600">{Math.round(progress)}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div className="bg-indigo-600 h-3 rounded-full transition-all duration-300"
+                    style={{ width: `${progress}%` }}></div>
+                </div>
+              </div>
+
+              {/* תיבת סיפור */}
+              {currentQ.hasStory && test.story && (
+                <div className="bg-amber-50 border-2 border-amber-300 rounded-lg p-6 mb-6 shadow-md">
+                  <h3 className="text-xl font-bold text-amber-900 mb-2 text-center">
+                    קרא/י את הטקסט והשב/י על השאלות
+                  </h3>
+                  <h3 className="text-lg font-semibold text-amber-800 mb-4 text-center">
+                    Read the text and answer the questions
+                  </h3>
+                  <h4 className="text-xl font-bold text-amber-900 mb-3 text-center">
+                    {test.story.title}
+                  </h4>
+                  <p className="text-lg leading-relaxed text-gray-800 whitespace-pre-line">
+                    {test.story.text}
+                  </p>
+                </div>
+              )}
+
+              {/* שאלה */}
+              <div className="bg-white rounded-2xl shadow-xl p-8">
+                <h2 className="text-2xl font-bold text-gray-800 mb-8 leading-relaxed whitespace-pre-line">
+                  {currentQ.question}
+                </h2>
+
+                <div className="space-y-4">
+                  {currentQ.options.map((option, idx) => {
+                    const letter = LETTERS[idx];
+                    const isSelected = selectedAnswer === letter;
+                    return (
+                      <label key={idx}
+                        className={`flex items-center p-4 rounded-lg cursor-pointer border-2 transition-all ${
+                          isSelected
+                            ? 'border-indigo-600 bg-indigo-50'
+                            : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50'
+                        }`}>
+                        <input type="radio" name={`q-${currentQuestion}`} value={letter}
+                          checked={isSelected} onChange={() => handleAnswerSelect(currentQuestion, letter)}
+                          className="ml-4 w-5 h-5 accent-indigo-600" />
+                        <span className="text-lg text-gray-800">
+                          <span className="font-bold ml-2">{letter}.</span>
+                          {option}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+
+                <div className="flex justify-between mt-8 gap-4">
+                  <button onClick={goToPrevQuestion} disabled={currentQuestion === 0}
+                    className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                      currentQuestion === 0
+                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                        : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                    }`}>
+                    → הקודם
+                  </button>
+                  <button onClick={goToNextQuestion} disabled={!selectedAnswer}
+                    className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                      !selectedAnswer
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                    }`}>
+                    {currentQuestion === test.questions.length - 1 ? 'סיום הרמה' : 'הבא'} ←
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // ============ מסך תוצאת הרמה ============
+      if (stage === 'levelResult') {
+        const score = scores[currentLevel];
+        const passed = score >= PASSING_SCORE;
+        const isLastLevel = currentLevel === TESTS.length - 1;
+
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4 md:p-8 flex items-center justify-center" dir="rtl">
+            <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-12 text-center">
+              <div className={`w-32 h-32 mx-auto mb-6 rounded-full flex items-center justify-center ${
+                passed ? 'bg-green-100' : 'bg-blue-100'
+              }`}>
+                <span className={`text-6xl font-bold ${passed ? 'text-green-600' : 'text-blue-600'}`}>
+                  {score}
+                </span>
+              </div>
+
+              <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                מבדק רמה - {test.name}
+              </h2>
+              <p className="text-xl text-gray-600 mb-1">
+                הציון שלך: {score} מתוך 100
+              </p>
+              <p className="text-base text-gray-400 mb-6">
+                Your score: {score} / 100
+              </p>
+
+              {passed ? (
+                <>
+                  {isLastLevel ? (
+                    <>
+                      <p className="text-2xl text-green-600 font-bold mb-1">
+                        🎉 כל הכבוד! עברת את כל הרמות!
+                      </p>
+                      <p className="text-base text-green-500 mb-6">Congratulations! You passed all levels!</p>
+                      <button onClick={continueToNextLevel}
+                        className="px-10 py-4 bg-green-600 hover:bg-green-700 text-white text-xl font-bold rounded-lg transition-all">
+                        סיום המבדק / Finish Test
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-2xl text-green-600 font-semibold mb-1">
+                        כל הכבוד! עברת לרמה הבאה
+                      </p>
+                      <p className="text-base text-green-500 mb-3">Well done! You advanced to the next level</p>
+                      <p className="text-lg text-gray-600 mb-1">
+                        הרמה הבאה: <span className="font-bold">{TESTS[currentLevel + 1].name}</span>
+                      </p>
+                      <p className="text-sm text-gray-400 mb-6">
+                        Next level: <span className="font-bold">{TESTS[currentLevel + 1].nameAr}</span>
+                      </p>
+                      <button onClick={continueToNextLevel}
+                        className="px-10 py-4 bg-green-600 hover:bg-green-700 text-white text-xl font-bold rounded-lg transition-all">
+                        Continue to next level ←
+                      </button>
+                      <div className="mt-4">
+                        <button onClick={finishAfterFailure}
+                          className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 text-base rounded-lg transition-all border border-gray-300">
+                          סיים כאן / Stop here
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  <p className="text-xl text-gray-700 mb-1">
+                    כל הכבוד על המאמץ!
+                  </p>
+                  <p className="text-base text-gray-400 mb-8">Well done!</p>
+                  <button onClick={finishAfterFailure}
+                    className="px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold rounded-lg transition-all">
+                    לסיכום המבדק / Test Summary
+                  </button>
+                </>
+              )}
+
+              <div className="mt-8 pt-8 border-t border-gray-200">
+                <p className="text-gray-600">
+                  <span className="font-semibold">{formData.firstName} {formData.lastName}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // ============ מסך סיכום סופי ============
+      if (stage === 'final') {
+        // זיהוי הרמה הגבוהה ביותר שעבר
+        let highestPassed = null;
+        for (let i = 0; i < scores.length; i++) {
+          if (scores[i] !== null && scores[i] >= PASSING_SCORE) {
+            highestPassed = TESTS[i].name;
+          }
+        }
+
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4 md:p-8" dir="rtl">
+            <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8 md:p-12">
+              <h1 className="text-4xl font-bold text-center text-indigo-900 mb-1">
+                סיכום המבדק
+              </h1>
+              <p className="text-center text-gray-400 mb-4">Test Summary</p>
+              <p className="text-center text-gray-600 mb-8 text-lg">
+                {formData.firstName} {formData.lastName}
+              </p>
+
+              {highestPassed ? (
+                <div className="bg-green-50 border-2 border-green-300 rounded-lg p-6 mb-8 text-center">
+                  <p className="text-lg text-gray-700 mb-1">Your level:</p>
+                  <p className="text-4xl font-bold text-green-700">{highestPassed}</p>
+                </div>
+              ) : (
+                <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-6 mb-8 text-center">
+                  <p className="text-xl text-blue-700 mb-1">כל הכבוד על המאמץ!</p>
+                  <p className="text-base text-blue-400">Well done!</p>
+                </div>
+              )}
+
+              <div className="space-y-3 mb-8">
+                <h3 className="text-xl font-bold text-gray-800 mb-1">תוצאות לפי רמה: <span className="text-sm font-normal text-gray-400">/ Results by level:</span></h3>
+                {TESTS.map((t, i) => {
+                  const s = scores[i];
+                  const didTake = s !== null;
+                  const didPass = didTake && s >= PASSING_SCORE;
+
+                  return (
+                    <div key={t.id}
+                      className={`flex items-center justify-between p-4 rounded-lg border-2 ${
+                        !didTake ? 'border-gray-200 bg-gray-50' :
+                        didPass ? 'border-green-300 bg-green-50' :
+                        'border-blue-300 bg-blue-50'
+                      }`}>
+                      <div className="flex items-center">
+                        <span className="text-xl ml-3">
+                          {!didTake ? '⏸️' : didPass ? '✅' : '📝'}
+                        </span>
+                        <span className="font-semibold text-gray-800">
+                          מבדק {t.name}
+                        </span>
+                      </div>
+                      <div className="text-left">
+                        {didTake ? (
+                          <span className={`text-2xl font-bold ${didPass ? 'text-green-700' : 'text-blue-700'}`}>
+                            {s}
+                          </span>
+                        ) : (
+                          <span className="text-gray-400 text-sm">Not taken</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="pt-6 border-t border-gray-200 text-center">
+                <p className="text-gray-600 text-sm">
+                  התוצאות נשמרו. תודה שהשתתפת!
+                  <br />
+                  <span className="text-gray-400">Results saved. Thank you!</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      return null;
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<HebrewLevelTest />);
+  </script>
+</body>
+</html>
