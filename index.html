@@ -258,7 +258,7 @@
     const LETTERS = ['א', 'ב', 'ג', 'ד'];
     const PASSING_SCORE = 67;
     const POINTS_PER_QUESTION = 4;
-    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxKJXMNKayqCkNIYpXHEMmNxlh19vPCjLG71XNBESW_cMgbKtcKcH5CSDTI3SzrTBbGNQ/exec';
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyvUzz7eG8THYUplO2YcnNtGYLhOaQ1zJCAWLQw2KYt2CbEVAKieoWt1cA2HPKqr1U80w/exec';
 
     // ============ הקומפוננטה הראשית ============
     const HebrewLevelTest = () => {
@@ -266,7 +266,7 @@
       const [currentLevel, setCurrentLevel] = useState(0);
       const [currentQuestion, setCurrentQuestion] = useState(0);
       const [formData, setFormData] = useState({
-        firstName: '', lastName: '', phone: '', email: '', location: '', teacherCode: ''
+        fullName: '', phone: '', location: '', teacherCode: ''
       });
       const [answers, setAnswers] = useState({}); // { 'a1-0': 'ב', ... }
       const [scores, setScores] = useState([null, null, null, null, null]);
@@ -336,10 +336,8 @@
 
           // שלב 1: מילוי הטופס
           setFormData({
-            firstName: 'בדיקה',
-            lastName: 'אוטומטית',
+            fullName: 'בדיקה אוטומטית',
             phone: '0501234567',
-            email: 'test@autotest.com',
             location: 'בדיקה'
           });
 
@@ -421,8 +419,8 @@
             }
             const lastAttemptedLevel = TESTS[currentLevel].name;
             const params = new URLSearchParams({
-              firstName: 'בדיקה', lastName: 'אוטומטית', phone: '0501234567',
-              email: 'test@autotest.com', location: 'בדיקה',
+              firstName: 'בדיקה אוטומטית', lastName: '', phone: '0501234567',
+              email: '', location: 'בדיקה',
               scoreA1: finalScores[0] !== null ? finalScores[0].toString() : '',
               scoreA2: finalScores[1] !== null ? finalScores[1].toString() : '',
               scoreB: finalScores[2] !== null ? finalScores[2].toString() : '',
@@ -443,8 +441,7 @@
       };
 
       const isFormValid = () => {
-        return formData.firstName && formData.lastName && formData.phone &&
-               formData.email && formData.location;
+        return formData.fullName && formData.phone && formData.location;
       };
 
       const startTest = () => {
@@ -535,10 +532,10 @@
         const lastAttemptedLevel = TESTS[currentLevel].name;
 
         const params = new URLSearchParams({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
+          firstName: formData.fullName,
+          lastName: '',
           phone: formData.phone,
-          email: formData.email,
+          email: '',
           location: formData.location,
           scoreA1: finalScores[0] !== null ? finalScores[0].toString() : '',
           scoreA2: finalScores[1] !== null ? finalScores[1].toString() : '',
@@ -606,33 +603,9 @@
               <div className="space-y-6">
                 <div>
                   <label className="block text-lg font-semibold text-gray-700 mb-2">
-                    שם פרטי <span className="text-sm font-normal text-gray-500">(الاسم الأول)</span>
+                    שם מלא <span className="text-sm font-normal text-gray-500">(الاسم الكامل)</span>
                   </label>
-                  <input type="text" name="firstName" value={formData.firstName} onChange={handleFormChange}
-                    className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none" />
-                </div>
-
-                <div>
-                  <label className="block text-lg font-semibold text-gray-700 mb-2">
-                    שם משפחה <span className="text-sm font-normal text-gray-500">(اسم العائلة)</span>
-                  </label>
-                  <input type="text" name="lastName" value={formData.lastName} onChange={handleFormChange}
-                    className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none" />
-                </div>
-
-                <div>
-                  <label className="block text-lg font-semibold text-gray-700 mb-2">
-                    מספר טלפון <span className="text-sm font-normal text-gray-500">(رقم الهاتف)</span>
-                  </label>
-                  <input type="tel" name="phone" value={formData.phone} onChange={handleFormChange}
-                    className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none" />
-                </div>
-
-                <div>
-                  <label className="block text-lg font-semibold text-gray-700 mb-2">
-                    כתובת מייל <span className="text-sm font-normal text-gray-500">(البريد الإلكتروني)</span>
-                  </label>
-                  <input type="email" name="email" value={formData.email} onChange={handleFormChange}
+                  <input type="text" name="fullName" value={formData.fullName} onChange={handleFormChange}
                     className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none" />
                 </div>
 
@@ -666,6 +639,11 @@
                 </button>
               </div>
             </div>
+
+              <p className="text-center text-gray-300 text-xs mt-6 leading-relaxed">
+                המבדק נכתב ע"י ד"ר יהודית גולן בן אורי ©<br />
+                האתר נבנה ע"י מיכאל קיסלוק (2026)
+              </p>
             </div>
           </div>
         );
@@ -892,7 +870,7 @@
 
               <div className="mt-8 pt-8 border-t border-gray-200">
                 <p className="text-gray-600">
-                  <span className="font-semibold">{formData.firstName} {formData.lastName}</span>
+                  <span className="font-semibold">{formData.fullName}</span>
                 </p>
               </div>
             </div>
@@ -918,7 +896,7 @@
               </h1>
               <p className="text-center text-gray-400 mb-4">ملخص الاختبار</p>
               <p className="text-center text-gray-600 mb-8 text-lg">
-                {formData.firstName} {formData.lastName}
+                {formData.fullName}
               </p>
 
               {highestPassed ? (
