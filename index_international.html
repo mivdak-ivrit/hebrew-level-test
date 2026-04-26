@@ -23,24 +23,10 @@
       font-size: 1.5rem;
       color: #4f46e5;
     }
-    .copyright-footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      text-align: center;
-      padding: 6px;
-      font-size: 0.7rem;
-      color: #cbd5e1;
-      background: transparent;
-      pointer-events: none;
-      z-index: 50;
-    }
   </style>
 </head>
 <body>
   <div id="root"></div>
-  <div class="copyright-footer">המבדק נכתב ע"י ד"ר יהודית גולן בן אורי © &nbsp;|&nbsp; האתר נבנה ע"י מיכאל קיסלוק (2026)</div>
 
   <script type="text/babel" data-presets="react">
     const { useState, useEffect } = React;
@@ -48,6 +34,12 @@
     // ============ מצב בדיקה אוטומטי ============
     // הפעלה: הוסף ?autotest לכתובת ה-URL (לדוגמה: file.html?autotest או netlify-url.app?autotest)
     const AUTO_TEST = new URLSearchParams(window.location.search).has('autotest');
+
+    const Footer = () => (
+      <p className="text-center text-gray-300 text-xs mt-6 pb-4 leading-relaxed">
+        המבדק נכתב ע"י ד"ר יהודית גולן בן אורי © &nbsp;|&nbsp; האתר נבנה ע"י מיכאל קיסלוק (2026)
+      </p>
+    );
     const SPEED = 250; // מילישניות בין לחיצות
 
     // ============ נתוני 5 המבדקים ============
@@ -660,6 +652,7 @@
                 </button>
               </div>
             </div>
+          <Footer />
             </div>
           </div>
         );
@@ -696,6 +689,7 @@
                 className="px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold rounded-lg transition-all">
                 Let's go! →
               </button>
+          <Footer />
             </div>
           </div>
         );
@@ -798,6 +792,7 @@
                 </div>
               </div>
             </div>
+          <Footer />
           </div>
         );
       }
@@ -882,9 +877,10 @@
 
               <div className="mt-8 pt-8 border-t border-gray-200">
                 <p className="text-gray-600">
-                  <span className="font-semibold">{formData.firstName} {formData.lastName}</span>
+                  <span className="font-semibold">{formData.firstName}</span>
                 </p>
               </div>
+          <Footer />
             </div>
           </div>
         );
@@ -966,6 +962,7 @@
                   <span className="text-gray-400" dir="ltr">Results saved. Thank you!</span>
                 </p>
               </div>
+          <Footer />
             </div>
           </div>
         );
