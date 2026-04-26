@@ -23,10 +23,24 @@
       font-size: 1.5rem;
       color: #4f46e5;
     }
+    .copyright-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      padding: 6px;
+      font-size: 0.7rem;
+      color: #cbd5e1;
+      background: transparent;
+      pointer-events: none;
+      z-index: 50;
+    }
   </style>
 </head>
 <body>
   <div id="root"></div>
+  <div class="copyright-footer">המבדק נכתב ע"י ד"ר יהודית גולן בן אורי © &nbsp;|&nbsp; האתר נבנה ע"י מיכאל קיסלוק (2026)</div>
 
   <script type="text/babel" data-presets="react">
     const { useState, useEffect } = React;
@@ -74,7 +88,7 @@
           { question: 'המורה שואלת את רינה:', options: ['כמה יש לך ילדים?', 'כמה ילדים יש לך?', 'כמה ילדים לך?', 'כמה לך ילדים?'] },
           { question: 'רינה יוצאת מהכיתה, והמורה שואלת:', options: ['איפה את הולכת?', 'לאין את הולכת?', 'לאן את הולכת?', 'מאיפה את הולכת?'] },
           { question: 'מה נכון?', options: ['לאדם יש אישה אבל אין לו ילדים.', 'יש לו אישה ויש לו ילדים.'], hasStory: true },
-          { question: 'אדם עובד היום?', options: ['לא', 'כן'], hasStory: true },
+          { question: 'לאדם יש עבודה?', options: ['כן', 'לא'], hasStory: true },
           { question: 'מי חולה?', options: ['אדם', 'אבא של אדם'], hasStory: true },
           { question: 'אדם מתחתן היום?', options: ['לא', 'כן'], hasStory: true },
           { question: 'איך אבא של אדם מרגיש?', options: ['הוא שמח', 'הוא עצוב'], hasStory: true }
@@ -258,7 +272,7 @@
     const LETTERS = ['א', 'ב', 'ג', 'ד'];
     const PASSING_SCORE = 67;
     const POINTS_PER_QUESTION = 4;
-    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyvUzz7eG8THYUplO2YcnNtGYLhOaQ1zJCAWLQw2KYt2CbEVAKieoWt1cA2HPKqr1U80w/exec';
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxKJXMNKayqCkNIYpXHEMmNxlh19vPCjLG71XNBESW_cMgbKtcKcH5CSDTI3SzrTBbGNQ/exec';
 
     // ============ הקומפוננטה הראשית ============
     const HebrewLevelTest = () => {
@@ -647,11 +661,6 @@
                 </button>
               </div>
             </div>
-
-              <p className="text-center text-gray-300 text-xs mt-6 leading-relaxed">
-                המבדק נכתב ע"י ד"ר יהודית גולן בן אורי ©<br />
-                האתר נבנה ע"י מיכאל קיסלוק (2026)
-              </p>
             </div>
           </div>
         );

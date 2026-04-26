@@ -23,10 +23,24 @@
       font-size: 1.5rem;
       color: #4f46e5;
     }
+    .copyright-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      padding: 6px;
+      font-size: 0.7rem;
+      color: #cbd5e1;
+      background: transparent;
+      pointer-events: none;
+      z-index: 50;
+    }
   </style>
 </head>
 <body>
   <div id="root"></div>
+  <div class="copyright-footer">המבדק נכתב ע"י ד"ר יהודית גולן בן אורי © &nbsp;|&nbsp; האתר נבנה ע"י מיכאל קיסלוק (2026)</div>
 
   <script type="text/babel" data-presets="react">
     const { useState, useEffect } = React;
@@ -42,7 +56,7 @@
         id: 'a1',
         key: 'scoreA1',
         name: "א' מתחילים",
-        nameAr: "Level A – Beginners",
+        nameAr: "Level Aleph Beginners (A1.1)",
         story: {
           title: 'הסיפור',
           text: `אדם גר בחיפה, בבית גדול ליד הים. הוא מורה, כי הוא אוהב ללמד ילדים. הוא נשוי, אבל אין לו ילדים. היום הוא לא הולך לעבודה, כי הוא הולך עם אבא שלו לבית חולים. אבא שלו לא מרגיש טוב. כואב לו כל הגוף: כואבת לו הבטן, כואב לו הראש וכואבות לו העיניים. אדם חושב: "אולי אבא צריך ניתוח?". הם מדברים עם הרופא, והרופא מסביר: "אדם, אבא שלך חולה, והוא צריך להישאר בבית החולים ומחר הניתוח. היום אסור לאכול ואסור לשתות". אבא של אדם חושב: "אבל יש חתונה היום בערב איך אני יכול להישאר בבית החולים היום?".`
@@ -66,7 +80,7 @@
           { question: 'אמיר חולה מאוד, ולכן הוא _____ ללכת לרופא.', options: ['רוצה', 'צריך', 'מותר', 'יכול'] },
           { question: 'מה תלמידים עושים בבית הספר?', options: ['הם לומדים.', 'הם ילמדו.', 'הם ילמודו.', 'הם למדו.'] },
           { question: 'בירושלים -', options: ['יש פארקים ויש לא ים.', 'יש פארקים ואין ים.', 'יש פארקים ולא יש ים.', 'יש פארקים ואין יש ים.'] },
-          { question: 'המורה שואלת את התלמידות "איך אתן מרגישות?" ומיכל עונה:', options: ['אני מרגישה טוב.', 'אני מרגישה טובה.', 'אני מרגישה טובים.', 'אני מרגישה טובות.'] },
+          { question: 'המורה שואלת את התלמידות "איך אתן מרגישות?" ורינה עונה:', options: ['אני מרגישה טוב.', 'אני מרגישה טובה.', 'אני מרגישה טובים.', 'אני מרגישה טובות.'] },
           { question: 'התלמידים מקשיבים ____ מורה.', options: ['על', 'לה', 'את', 'ל'] },
           { question: 'אמיר מטייל בירושלים ורוצה לאכול.', options: ['הוא מחפש את חומוס.', 'הוא מחפש את החומוס.', 'הוא מחפש על חומוס.', 'הוא מחפש חומוס.'] },
           { question: 'תיירים בירושלים -', options: ['הם הולכים להשוק.', 'הם הולכים משוק.', 'הם הולכים לשוק.', 'הם הולכים על שוק.'] },
@@ -74,7 +88,7 @@
           { question: 'המורה שואלת את רינה:', options: ['כמה יש לך ילדים?', 'כמה ילדים יש לך?', 'כמה ילדים לך?', 'כמה לך ילדים?'] },
           { question: 'רינה יוצאת מהכיתה, והמורה שואלת:', options: ['איפה את הולכת?', 'לאין את הולכת?', 'לאן את הולכת?', 'מאיפה את הולכת?'] },
           { question: 'מה נכון?', options: ['לאדם יש אישה אבל אין לו ילדים.', 'יש לו אישה ויש לו ילדים.'], hasStory: true },
-          { question: 'אדם עובד היום?', options: ['לא', 'כן'], hasStory: true },
+          { question: 'לאדם יש עבודה?', options: ['כן', 'לא'], hasStory: true },
           { question: 'מי חולה?', options: ['אדם', 'אבא של אדם'], hasStory: true },
           { question: 'אדם מתחתן היום?', options: ['לא', 'כן'], hasStory: true },
           { question: 'איך אבא של אדם מרגיש?', options: ['הוא שמח', 'הוא עצוב'], hasStory: true }
@@ -84,14 +98,14 @@
         id: 'a2',
         key: 'scoreA2',
         name: "א' מתקדמים",
-        nameAr: "Level A – Advanced",
+        nameAr: "Level Aleph Advanced (A1.2)",
         story: {
           title: 'עבודה בעולם המודרני',
           text: `החיים השתנו. פעם, אנשים הלכו לעבודה בבוקר וחזרו הביתה בערב. בבית הם לא עבדו, ולכן היה להם הרבה זמן. הם דיברו עם הילדים, אכלו ארוחת ערב עם המשפחה, הלכו לטייל, ביקרו את הדודים והדודות, קראו ספרים וחשבו. והיום? היום הרבה אנשים עובדים מהבוקר עד הערב. בבוקר הם הולכים לעבודה ועובדים קשה, ואז, בערב, הם חוזרים הביתה, כותבים מיילים, מדברים בטלפון, כותבים עוד מיילים, שולחים הודעות למנהל ועונים למיילים...
 
 יוסף, שעובד בחברת הייטק, אומר: "לחיים בעולם המודרני יש יתרונות, אבל יש להם גם חסרונות. אם אתה עובד בחברה בינלאומית אתה צריך לעבוד כל הזמן. אפשר לחיות ככה, אבל לא כל אחד רוצה עבודה בלי הפסקה. אני חושב שזה לא בריא".
 
-מרבת, שעובדת גם היא בחברת הייטק, אומרת: "החיים המודרניים מעניינים. אני אוהבת אותם. אני יכולה לגור במקום אחד בעולם ולעבוד עם אנשים במקום אחר בעולם. אני יכולה לעבוד ביום או בלילה, תמיד יש מישהו שאפשר לדבר אתו".`
+נועה, שעובדת גם היא בחברת הייטק, אומרת: "החיים המודרניים מעניינים. אני אוהבת אותם. אני יכולה לגור במקום אחד בעולם ולעבוד עם אנשים במקום אחר בעולם. אני יכולה לעבוד ביום או בלילה, תמיד יש מישהו שאפשר לדבר אתו".`
         },
         correctAnswers: {
           0: 'ב', 1: 'א', 2: 'ג', 3: 'ג', 4: 'ב', 5: 'ב', 6: 'א', 7: 'א', 8: 'ב', 9: 'ב',
@@ -103,17 +117,17 @@
           { question: 'איך ברבים? חנות גדולה -', options: ['חנויות גדולות', 'חנויות גדולה', 'חנותים גדולים', 'חנותיות גדולות'] },
           { question: 'דני אומר: יש לי חיים ________.', options: ['טוב', 'טובה', 'טובים', 'טובות'] },
           { question: 'איך ברבים? איש דתי –', options: ['אנשים דתי', 'אנשים דתיות', 'אנשים דתיים', 'אנשים דתייה'] },
-          { question: 'מיכל אוהבת לשתות קפה, אבל אתמול היא לא ____ קפה.', options: ['שתה', 'שתתה', 'שתו', 'תשתה'] },
+          { question: 'רינה אוהבת לשתות קפה, אבל אתמול היא לא ____ קפה.', options: ['שתה', 'שתתה', 'שתו', 'תשתה'] },
           { question: 'דני מספר: "אתמול בכיתה אני והחברים שלי ____ על הרבה דברים".', options: ['דיברו', 'דיברנו', 'דיבר', 'דברנו'] },
           { question: 'אחרי השיעור התלמיד אומר למורה: \'_____ לנו שיש מבחן מחר.\'', options: ['את אמרת', 'את תאמרי', 'את אמרתי', 'את דיברת'] },
           { question: 'דני מספר מה הוא עשה אתמול:', options: ['ישבתי עם חברים.', 'הייתי יושב עם חברים בבית קפה.', 'ישבת עם חברים.', 'ישבנו עם החברים.'] },
           { question: 'אתמול בערב -', options: ['הייתה חתונה, ובחתונה היה הרבה אורחים.', 'הייתה חתונה, ובחתונה היו הרבה אורחים.', 'היה חתונה, ובחתונה היה הרבה אורחים.', 'היה חתונה, ובחתונה היו הרבה אורחים.'] },
-          { question: 'למיכל יש תור לרופא. היא אומרת למורה: \'_____\'', options: ['יש לי תור לרופא. אני הולכת.', 'יש לי תור לרופא. אני צריכה ללכת.', 'יש לי תור לרופא. אני רוצה ללכת.', 'יש לי תור לרופא. אני צריכה לילך.'] },
-          { question: 'מיכל באה לשיעור בשעה 9:00. מה המורה שואלת?', options: ['למה את באה מאוחר?', 'למה את באה מאוחרת?', 'למה את באה מאוחרים?', 'למה את לבוא מאוחר?'] },
-          { question: 'בהפסקה יוסף רואה את מיכל מדברת עם דני. הוא אומר לחבר:', options: ['היא מדברת איתו.', 'היא מדברת אותו.', 'היא מדברת עמה.', 'היא מדברת ממנו.'] },
-          { question: 'אימא של מיכל חולה.', options: ['מיכל עוזר לאימא.', 'מיכל עוזרת על אימא.', 'מיכל עוזרת את אימא.', 'מיכל עוזרת לאימא.'] },
+          { question: 'לרינה יש תור לרופא. היא אומרת למורה: \'_____\'', options: ['יש לי תור לרופא. אני הולכת.', 'יש לי תור לרופא. אני צריכה ללכת.', 'יש לי תור לרופא. אני רוצה ללכת.', 'יש לי תור לרופא. אני צריכה לילך.'] },
+          { question: 'רינה באה לשיעור בשעה 9:00. מה המורה שואלת?', options: ['למה את באה מאוחר?', 'למה את באה מאוחרת?', 'למה את באה מאוחרים?', 'למה את לבוא מאוחר?'] },
+          { question: 'בהפסקה יוסף רואה את רינה מדברת עם דני. הוא אומר לחבר:', options: ['היא מדברת איתו.', 'היא מדברת אותו.', 'היא מדברת עמה.', 'היא מדברת ממנו.'] },
+          { question: 'אימא של רינה חולה.', options: ['רינה עוזר לאימא.', 'רינה עוזרת על אימא.', 'רינה עוזרת את אימא.', 'רינה עוזרת לאימא.'] },
           { question: 'למה הם באו לפה?', options: ['כי אבא שלהם אמר להם.', 'בגלל אבא שלהם אמר להם.', 'אבא שלהם.', 'כי שאבא שלהם אמר.'] },
-          { question: 'מיכל לומדת -', options: ['מ - 8:00 עוד 14:00.', 'מי - 8:00 עוד 14:00.', 'מי 8:00 עד 14:00.', 'מ- 8:00 עד 14:00.'] },
+          { question: 'רינה לומדת -', options: ['מ - 8:00 עוד 14:00.', 'מי - 8:00 עוד 14:00.', 'מי 8:00 עד 14:00.', 'מ- 8:00 עד 14:00.'] },
           { question: 'המורה שואל לשם מה התלמידים באים לקורס העברית, ודני עונה:', options: ['כי ללמוד עברית', 'בגלל ללמוד עברית', 'כדי ללמוד עברית', 'בגלל שרוצה ללמוד עברית'] },
           { question: 'לפני שבוע ____ מבחן.', options: ['היינו', 'הייתה', 'היו', 'היה'] },
           { question: 'העגבנייה ____ השמש ____ והשמים ____.', options: ['אדום, צהוב, כחול', 'אדומה, צהובה, כחול', 'אדומה, צהובה, כחולים', 'אדומה, צהוב, כחולים'] },
@@ -123,14 +137,14 @@
           { question: 'פעם -', options: ['אנשים לא עשו כלום בערב.', 'אנשים רק דיברו עם הילדים וטיילו.', 'אנשים עבדו בבית בערב.', 'אנשים עשו הרבה דברים בערב.'], hasStory: true },
           { question: 'החיים פעם והחיים היום -', options: ['החיים פעם הם כמו החיים היום.', 'החיים היום הם לא כמו החיים פעם.', 'פעם היו חיים ועכשיו אין.', 'החיים פעם והחיים היום לא שונים.'], hasStory: true },
           { question: 'מה יוסף חושב על החיים המודרניים?', options: ['אי אפשר לחיות ככה.', 'אפשר לחיות ככה, וזה בריא.', 'אפשר לחיות ככה, אבל לא כולם רוצים לחיות ככה.', 'כולם יכולים ורוצים חיים עם עבודה בלי הפסקה.'], hasStory: true },
-          { question: 'מרבת חושבת ש –', options: ['לחיים המודרניים יש רק יתרונות.', 'לחיים המודרניים יש יתרונות וחסרונות.', 'אי אפשר לדבר עם אנשים בחיים המודרניים.', 'צריך לדבר עם אנשים במקומות אחרים בעולם.'], hasStory: true }
+          { question: 'נועה חושבת ש –', options: ['לחיים המודרניים יש רק יתרונות.', 'לחיים המודרניים יש יתרונות וחסרונות.', 'אי אפשר לדבר עם אנשים בחיים המודרניים.', 'צריך לדבר עם אנשים במקומות אחרים בעולם.'], hasStory: true }
         ]
       },
       {
         id: 'b',
         key: 'scoreB',
         name: "ב'",
-        nameAr: "Level B",
+        nameAr: "Level Bet (A2)",
         story: null,
         correctAnswers: {
           0: 'ב', 1: 'ד', 2: 'א', 3: 'ג', 4: 'ג', 5: 'ד', 6: 'ב', 7: 'א', 8: 'ד', 9: 'ב',
@@ -144,16 +158,16 @@
           { question: 'בשבוע הבא ____ על טכנולוגיה.', options: ['נידבר', 'נדברו', 'נדבר', 'נידברנו'] },
           { question: 'שאלה: "מה תעשו מחר?"\nתשובה:', options: ['מחר קנינו דברים בשוק.', 'מחר נקני דברים בשוק.', 'מחר נקנה דברים בשוק.', 'מחר אנחנו נקנו דברים בשוק.'] },
           { question: 'מה תעשו בשוק?', options: ['נבחרים ירקות יפים.', 'נבחור ירקות יפים.', 'נבחרו ירקות יפים.', 'נבחר ירקות יפים.'] },
-          { question: 'מה מיכל רוצה להיות?', options: ['היא רוצה להיות מנהלת טובה ועושה הרבה דברים.', 'היא רוצה להיות מנהלת טובה ולעשות הרבה דברים.', 'היא רוצה להיות מנהלת ורוצה להיות הרבה דברים.', 'היא רוצה לעשות מנהלת ולהיות הרבה דברים.'] },
+          { question: 'מה רינה רוצה להיות?', options: ['היא רוצה להיות מנהלת טובה ועושה הרבה דברים.', 'היא רוצה להיות מנהלת טובה ולעשות הרבה דברים.', 'היא רוצה להיות מנהלת ורוצה להיות הרבה דברים.', 'היא רוצה לעשות מנהלת ולהיות הרבה דברים.'] },
           { question: 'דני אומר: "כשאגדל..." –', options: ['תהיה לי מכונית.', 'יהיה לי מכונית.', 'יהיו לי מכונית.', 'היה לי מכונית.'] },
           { question: 'דני רוצה לקנות נעלי ____.', options: ['תרוצי', 'לרוץ', 'רוצה', 'ריצה'] },
           { question: 'דני רוצה ____ מרתון השנה.', options: ['רץ', 'לרוץ', 'ריצה', 'רוצה'] },
           { question: '"בית גדול" – ברבים', options: ['ביתים גדולה', 'בתים גדולה', 'ביתים גדולים', 'בתים גדולים'] },
           { question: 'יוסף אומר: "אני לא מנהל אלא מורה". מה נכון?', options: ['יוסף רק מנהל.', 'יוסף רק מורה.', 'יוסף לא מנהל ולא מורה.', 'יוסף מורה ומנהל.'] },
           { question: '"כמו שתלמידים לא אוהבים לעשות מבחנים, כך גם מורים לא אוהבים לבדוק אותם". מה נכון?', options: ['רק תלמידים לא אוהבים מבחנים.', 'רק מורים אוהבים מבחנים.', 'מורים ותלמידים לא אוהבים מבחנים.', 'מורים ותלמידים אוהבים מבחנים.'] },
-          { question: 'מיכל לומדת עברית ____ דני לומד אנגלית.', options: ['וגם', 'אבל', 'ואילו', 'בגלל'] },
-          { question: 'מיכל ודני גרים ברחוב קטן בכפר.', options: ['דני גר קרוב.', 'דני גר קרוב ממיכל.', 'דני גר קרוב על מיכל.', 'דני גר קרוב למיכל.'] },
-          { question: 'מיכל רוצה להיות מנהלת. היא אומרת:', options: ['אני רוצה להיות מנהלת לבית ספר.', 'אני רוצה להיות מנהלת של בית ספר.', 'אני רוצה להיות מנהילת של בית ספר.', 'אני רוצה להיות מנהלת על בית ספר.'] },
+          { question: 'רינה לומדת עברית ____ דני לומד אנגלית.', options: ['וגם', 'אבל', 'ואילו', 'בגלל'] },
+          { question: 'רינה ודני גרים ברחוב קטן בכפר.', options: ['דני גר קרוב.', 'דני גר קרוב מרינה.', 'דני גר קרוב על רינה.', 'דני גר קרוב לרינה.'] },
+          { question: 'רינה רוצה להיות מנהלת. היא אומרת:', options: ['אני רוצה להיות מנהלת לבית ספר.', 'אני רוצה להיות מנהלת של בית ספר.', 'אני רוצה להיות מנהילת של בית ספר.', 'אני רוצה להיות מנהלת על בית ספר.'] },
           { question: 'דני אומר: "אני מדבר על כדורגל". מה המורה שאל?', options: ['על מה אתה מדבר?', 'על מי אתה מדבר?', 'למי אתה מדבר?', 'מי אתה מדבר?'] },
           { question: 'המורה לספורט אומר לתלמידים:', options: ['רוץ!', 'רוצו!', 'ריצה!', 'רצים!'] },
           { question: 'מחר אנחנו ____ במסעדה.', options: ['נוכל', 'נואכל', 'נאכלו', 'נאכל'] },
@@ -169,7 +183,7 @@
         id: 'c',
         key: 'scoreC',
         name: "ג'",
-        nameAr: "Level C",
+        nameAr: "Level Gimel (B1)",
         story: {
           title: 'החיים במציאות של אי-ודאות',
           text: `מציאות של אי-ודאות היא חלק מהחיים המודרניים, ועם זאת רוב האנשים לא יודעים איך להתמודד איתה. האם באמת אין מה לעשות? מאמנים לחיים בריאים טוענים שבניגוד למה שרוב האנשים חושבים, בני אדם יכולים להשפיע על חייהם. אם הם רק יבינו את הגורמים המשפיעים עליהם, הם יבינו מה הם אמורים לעשות. אם הם רק ידעו לארגן את החיים שלהם הם יהיו מורכבים פחות.`
@@ -211,7 +225,7 @@
         id: 'd',
         key: 'scoreD',
         name: "ד'",
-        nameAr: "Level D",
+        nameAr: "Level Dalet (B2)",
         story: {
           title: 'חדשנות בחברות מודרניות',
           text: `כל חברה מודרנית מנסה לקדם תהליכי חדשנות למרות החסמים הרבים. אלה נובעים מסיבות שונות: מסורת ניהול קשוחה; חוסר הבנה של מנהלים בנוגע לחשיבותה של חדשנות; היעדר כלים של העובדים, בכירים וזוטרים כאחד; תחושת חוסר מסוגלות של העובדים; פחד של עובדים שבעקבות שינויים משרתם תהפוך להיות מיותרת; ניסיון קודם שכשל ועוד.
@@ -258,7 +272,7 @@
     const LETTERS = ['א', 'ב', 'ג', 'ד'];
     const PASSING_SCORE = 67;
     const POINTS_PER_QUESTION = 4;
-    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyvUzz7eG8THYUplO2YcnNtGYLhOaQ1zJCAWLQw2KYt2CbEVAKieoWt1cA2HPKqr1U80w/exec';
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxKJXMNKayqCkNIYpXHEMmNxlh19vPCjLG71XNBESW_cMgbKtcKcH5CSDTI3SzrTBbGNQ/exec';
 
     // ============ הקומפוננטה הראשית ============
     const HebrewLevelTest = () => {
@@ -573,7 +587,7 @@
                   <p className="text-lg font-bold text-amber-900 mb-1">
                     🔖 יש לך מבדק שהתחלת — רוצה להמשיך מהמקום שעצרת?
                   </p>
-                  <p className="text-sm text-amber-700 mb-4">
+                  <p className="text-sm text-amber-700 mb-4" dir="ltr">
                     You have an unfinished test — would you like to resume?
                   </p>
                   <div className="flex gap-3">
@@ -591,13 +605,14 @@
 
             <div className="bg-white rounded-2xl shadow-xl p-8">
               <h1 className="text-4xl font-bold text-center text-indigo-900 mb-2">
-                Hebrew Level Test / מבדק רמה בעברית
-              </h1>
-              <p className="text-center text-gray-600 mb-2 text-lg">
                 Hebrew Level Test
-              </p>
-              <p className="text-center text-gray-500 mb-8 text-sm">
+                <br />
+                מבדק רמה בעברית
+              </h1>
+              <p className="text-center text-gray-500 mb-8 text-sm" dir="ltr">
                 The test has 5 levels. The better you do, the further you advance.
+                <br />
+                If you feel it's too hard, you can press the "Stop here" button.
               </p>
 
               <div className="space-y-6">
@@ -642,16 +657,9 @@
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}>
                   Start Test / התחל מבדק
-                  <br />
-                  <span className="text-base font-normal">Start Test</span>
                 </button>
               </div>
             </div>
-
-              <p className="text-center text-gray-300 text-xs mt-6 leading-relaxed">
-                המבדק נכתב ע"י ד"ר יהודית גולן בן אורי ©<br />
-                האתר נבנה ע"י מיכאל קיסלוק (2026)
-              </p>
             </div>
           </div>
         );
@@ -663,34 +671,30 @@
           <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4 md:p-8 flex items-center justify-center" dir="rtl">
             <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-12 text-center">
               <div className="mb-4 text-gray-500 text-lg">
-                רמה {currentLevel + 1} מתוך {TESTS.length}
-                <span className="mx-2 text-gray-300">|</span>
-                <span className="text-base">Level {currentLevel + 1} of {TESTS.length}</span>
+                <div>רמה {currentLevel + 1} מתוך {TESTS.length}</div>
+                <div className="text-base">Level {currentLevel + 1} of {TESTS.length}</div>
               </div>
               <h1 className="text-5xl font-bold text-indigo-900 mb-2">
                 {test.name}
               </h1>
-              <p className="text-xl text-gray-600 mb-6">{test.nameAr}</p>
+              <p className="text-xl text-gray-600 mb-6" dir="ltr">{test.nameAr}</p>
 
               <div className="bg-indigo-50 border-2 border-indigo-200 rounded-lg p-6 mb-8">
                 <p className="text-lg text-gray-700 mb-1">
                   <span className="font-bold">25</span> שאלות
                   {test.story && <span> • כולל קטע קריאה</span>}
                 </p>
-                <p className="text-sm text-gray-500 mb-3">
+                <p className="text-sm text-gray-500 mb-3" dir="ltr">
                   {test.story ? '25 questions • includes a reading passage' : '25 questions'}
                 </p>
-                <p className="text-base text-gray-600 mb-1">
+                <p className="text-base text-gray-600 mb-1" dir="ltr">
                   To advance to the next level you need a score of <span className="font-bold">{PASSING_SCORE}</span> or higher
-                </p>
-                <p className="text-sm text-gray-500">
-                  To advance to the next level, a score of <span className="font-bold">{PASSING_SCORE}</span> or higher is required
                 </p>
               </div>
 
-              <button onClick={beginLevel}
+              <button onClick={beginLevel} dir="ltr"
                 className="px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold rounded-lg transition-all">
-                Let's go! ←
+                Let's go! →
               </button>
             </div>
           </div>
@@ -733,7 +737,7 @@
                   <h3 className="text-xl font-bold text-amber-900 mb-2 text-center">
                     קרא/י את הטקסט והשב/י על השאלות
                   </h3>
-                  <h3 className="text-lg font-semibold text-amber-800 mb-4 text-center">
+                  <h3 className="text-lg font-semibold text-amber-800 mb-4 text-center" dir="ltr">
                     Read the text and answer the questions
                   </h3>
                   <h4 className="text-xl font-bold text-amber-900 mb-3 text-center">
@@ -821,7 +825,7 @@
               <p className="text-xl text-gray-600 mb-1">
                 הציון שלך: {score} מתוך 100
               </p>
-              <p className="text-base text-gray-400 mb-6">
+              <p className="text-base text-gray-400 mb-6" dir="ltr">
                 Your score: {score} / 100
               </p>
 
@@ -832,7 +836,7 @@
                       <p className="text-2xl text-green-600 font-bold mb-1">
                         🎉 כל הכבוד! עברת את כל הרמות!
                       </p>
-                      <p className="text-base text-green-500 mb-6">Congratulations! You passed all levels!</p>
+                      <p className="text-base text-green-500 mb-6" dir="ltr">Congratulations! You passed all levels!</p>
                       <button onClick={continueToNextLevel}
                         className="px-10 py-4 bg-green-600 hover:bg-green-700 text-white text-xl font-bold rounded-lg transition-all">
                         סיום המבדק / Finish Test
@@ -843,21 +847,21 @@
                       <p className="text-2xl text-green-600 font-semibold mb-1">
                         כל הכבוד! עברת לרמה הבאה
                       </p>
-                      <p className="text-base text-green-500 mb-3">Well done! You advanced to the next level</p>
+                      <p className="text-base text-green-500 mb-3" dir="ltr">Well done! You advanced to the next level</p>
                       <p className="text-lg text-gray-600 mb-1">
                         הרמה הבאה: <span className="font-bold">{TESTS[currentLevel + 1].name}</span>
                       </p>
-                      <p className="text-sm text-gray-400 mb-6">
+                      <p className="text-sm text-gray-400 mb-6" dir="ltr">
                         Next level: <span className="font-bold">{TESTS[currentLevel + 1].nameAr}</span>
                       </p>
-                      <button onClick={continueToNextLevel}
+                      <button onClick={continueToNextLevel} dir="ltr"
                         className="px-10 py-4 bg-green-600 hover:bg-green-700 text-white text-xl font-bold rounded-lg transition-all">
-                        Continue to next level ←
+                        Continue to next level →
                       </button>
                       <div className="mt-4">
                         <button onClick={finishAfterFailure}
                           className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-600 text-base rounded-lg transition-all border border-gray-300">
-                          סיים כאן / Stop here
+                          Stop here
                         </button>
                       </div>
                     </>
@@ -868,7 +872,7 @@
                   <p className="text-xl text-gray-700 mb-1">
                     כל הכבוד על המאמץ!
                   </p>
-                  <p className="text-base text-gray-400 mb-8">Well done!</p>
+                  <p className="text-base text-gray-400 mb-8" dir="ltr">Well done!</p>
                   <button onClick={finishAfterFailure}
                     className="px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white text-xl font-bold rounded-lg transition-all">
                     לסיכום המבדק / Test Summary
@@ -902,20 +906,20 @@
               <h1 className="text-4xl font-bold text-center text-indigo-900 mb-1">
                 סיכום המבדק
               </h1>
-              <p className="text-center text-gray-400 mb-4">Test Summary</p>
+              <p className="text-center text-gray-400 mb-4" dir="ltr">Test Summary</p>
               <p className="text-center text-gray-600 mb-8 text-lg">
                 {formData.firstName} {formData.lastName}
               </p>
 
               {highestPassed ? (
                 <div className="bg-green-50 border-2 border-green-300 rounded-lg p-6 mb-8 text-center">
-                  <p className="text-lg text-gray-700 mb-1">Your level:</p>
+                  <p className="text-lg text-gray-700 mb-1" dir="ltr">Your level:</p>
                   <p className="text-4xl font-bold text-green-700">{highestPassed}</p>
                 </div>
               ) : (
                 <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-6 mb-8 text-center">
                   <p className="text-xl text-blue-700 mb-1">כל הכבוד על המאמץ!</p>
-                  <p className="text-base text-blue-400">Well done!</p>
+                  <p className="text-base text-blue-400" dir="ltr">Well done!</p>
                 </div>
               )}
 
@@ -959,7 +963,7 @@
                 <p className="text-gray-600 text-sm">
                   התוצאות נשמרו. תודה שהשתתפת!
                   <br />
-                  <span className="text-gray-400">Results saved. Thank you!</span>
+                  <span className="text-gray-400" dir="ltr">Results saved. Thank you!</span>
                 </p>
               </div>
             </div>
