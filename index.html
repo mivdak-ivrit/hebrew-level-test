@@ -264,6 +264,8 @@
     const LETTERS = ['א', 'ב', 'ג', 'ד'];
     const PASSING_SCORE = 67;
     const POINTS_PER_QUESTION = 4;
+    // הרמה שמוצגת/נרשמת בסיום: מי שעבר את הרמה הגבוהה ביותר (ד') — רמתו היא ה'.
+    const resultLevelName = (index) => (index === TESTS.length - 1 ? "ה'" : TESTS[index].name);
     const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxKJXMNKayqCkNIYpXHEMmNxlh19vPCjLG71XNBESW_cMgbKtcKcH5CSDTI3SzrTBbGNQ/exec';
 
     // ============ הקומפוננטה הראשית ============
@@ -420,7 +422,7 @@
             let lastPassedLevel = 'אף רמה';
             for (let i = 0; i < finalScores.length; i++) {
               if (finalScores[i] !== null && finalScores[i] >= PASSING_SCORE) {
-                lastPassedLevel = TESTS[i].name;
+                lastPassedLevel = resultLevelName(i);
               }
             }
             const lastAttemptedLevel = TESTS[currentLevel].name;
@@ -530,7 +532,7 @@
         let lastPassedLevel = 'אף רמה';
         for (let i = 0; i < finalScores.length; i++) {
           if (finalScores[i] !== null && finalScores[i] >= PASSING_SCORE) {
-            lastPassedLevel = TESTS[i].name;
+            lastPassedLevel = resultLevelName(i);
           }
         }
 
@@ -897,7 +899,7 @@
         let highestPassed = null;
         for (let i = 0; i < scores.length; i++) {
           if (scores[i] !== null && scores[i] >= PASSING_SCORE) {
-            highestPassed = TESTS[i].name;
+            highestPassed = resultLevelName(i);
           }
         }
 
