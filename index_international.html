@@ -525,6 +525,13 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
 
+      // ניקוי קוד המורה: אותיות גדולות, בלי רווחים, ושליפת הקוד (2 אותיות + 4 ספרות) מתוך טקסט נוסף
+      const normalizeTeacherCode = (raw) => {
+        const compact = (raw || '').toString().toUpperCase().replace(/\s+/g, '');
+        const m = compact.match(/[A-Z]{2}\d{4}/);
+        return m ? m[0] : compact;
+      };
+
       const submitToSheet = (finalScores) => {
         if (dataSent) return;
         setDataSent(true);
@@ -554,7 +561,7 @@
           scoreD: finalScores[4] !== null ? finalScores[4].toString() : '',
           lastPassedLevel: lastPassedLevel,
           lastAttemptedLevel: lastAttemptedLevel,
-          teacherCode: formData.teacherCode || '',
+          teacherCode: normalizeTeacherCode(formData.teacherCode),
           version: 'intl',
           unified: 'true'
         });
